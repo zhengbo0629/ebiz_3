@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>包裹管理</title>
+
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+
+<script type="text/javascript">
+    function customSearch (){
+        alert();
+        $("form").submit();
+    }
+
+    $(function(){
+        $(".pagination li").click(function(){
+            var value = $(this).val();
+            $("#formCondition input[name=currentPage]").val(value);
+            $("#formCondition").submit();
+        })
+    })
+
+
+
+</script>
+
+<style>
+    .form-group{
+        display: inline;
+        float: left;
+        margin-left:15px;
+    }
+    .form-group label{
+        display: inline;
+    }
+
+    .form-group input{
+        width: 200px;
+    }
+    table tr , table th{
+        align:center;
+        verticle-align: center;
+    }
+
+    .pagination li{
+        width:35px;
+        color: #2b669a;
+        background-color: white;
+        cursor: pointer;
+        border:1px solid #2b669a;
+        text-align: center;
+        vertical-align: center;
+    }
+</style>
+
+<body>
+
+
+<div class="container">
+
+    <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+        <h3 style="margin-top: 5px;">公司所有包裹(All Package for Company)</h3>
+    </div>
+
+    <form action="/companyManager/readAllNeedCheckPackagesForCompanyByCondition" th:object="${vo}" id="formCondition">
+        <div class="form-group">
+            <label for="id">UID</label>
+
+            <input th:if="${vo.id} eq null" type="text" class="form-control" id="id" name="id" placeholder="UID"/>
+            <input th:if="${vo.id} ne null" type="text" class="form-control" id="id" name="id" th:field="*{id}"/>
+
+        </div>
+        <div class="form-group">
+            <label for="userName">用户名</label>
+            <input th:if="${vo.userName} eq null" type="text" class="form-control" id="userName" name="userName" placeholder="用户名称"/>
+            <input th:if="${vo.userName} ne null" type="text" class="form-control" id="userName" name="userName" th:field="*{userName}"/>
+        </div>
+
+        <div class="form-group">
+            <label for="price">价格查找</label>
+            <select class="form-control" id="price" name="price">
+                <option value="all-">全部</option>
+                <option value="0-200">200以下</option>
+                <option value="200-500">200-500</option>
+                <option value="500-800">500-800</option>
+                <option value="800-1000">800-1000</option>
+                <option value="1000-">1000以上</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="shippingAddress">地址</label>
+            <input type="text" class="form-control" id="shippingAddress" name="shippingAddress"/>
+        </div>
+
+        <div class="form-group">
+            <label for="brand">brand</label>
+            <input type="text" class="form-control" id="brand" name="brand"/>
+        </div>
+
+        <div class="form-group">
+            <label for="upc">upc</label>
+            <input type="text" class="form-control" id="upc" name="upc" />
+        </div>
+
+        <div class="form-group">
+            <label for="status">邮寄状态</label>
+            <select class="form-control" id="status" name="status">
+                <option value="0">全部</option>
+                <option value="1">完成</option>
+                <option value="2">未完成</option>
+            </select>
+        </div>
+
+
+        <div class="form-group" >
+            <input type="hidden" th:if="*{currentPage} eq null " class="form-control" id="currentPage" name="currentPage" value="1"/>
+            <input type="hidden"  th:if="*{currentPage} ne null " class="form-control" id="currentPage" name="currentPage" th:field="*{currentPage}"/>
+        </div>
+
+
+
+        <div class="btn-group" style="float: right;margin-top:15px;margin-right:100px;">
+            <button id="btn_search" onclick="customSearch()" type="button" class="btn btn-primary btn-space">
+                查询
+            </button>
+            <button id="btn_reset" type="reset" class="btn btn-default btn-space">
+                重置
+            </button>
+        </div>
+        <br/>
+        <div class="form-group" style="width:80%">
+            <ul class="pagination">
+                <li th:value="1">首页</li>
+                <li th:if="${vo.currentPage} ge 2" th:value="${vo.currentPage-1}">&laquo;</li>
+                <li th:if="${vo.currentPage} lt 2" th:value="1">&laquo;</li>
+
+                <li th:if="${vo.currentPage} ge 3" th:value="${vo.currentPage-2}" th:text="${vo.currentPage-2}"></li>
+                <li th:if="${vo.currentPage} ge 2" th:value="${vo.currentPage-1}" th:text="${vo.currentPage-1}"></li>
+                <li th:value="${vo.currentPage}" th:text="${vo.currentPage}" style="background-color: #2aabd2;"></li>
+                <li th:if="${vo.currentPage < vo.totalPage - 1}" th:value="${vo.currentPage+1}" th:text="${vo.currentPage+1}"></li>
+                <li th:if="${vo.currentPage < vo.totalPage - 2}" th:value="${vo.currentPage+2}" th:text="${vo.currentPage+2}"></li>
+                <li th:if="${vo.currentPage < vo.totalPage - 1}" th:value="${vo.currentPage+1}">&raquo;</li>
+                <li th:if="${vo.currentPage >= vo.totalPage}" th:value="${vo.totalPage}">&raquo;</li>
+                <li th:value="${vo.totalPage}">尾页</li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+
+<div class="container" >
+
+    <table id="table" class="table">
+        <tr>
+            <th>UID</th>
+            <th>用户名</th>
+            <th>型号<br/>产品名</th>
+            <th>Brand:UPC:<br/>SKU:ASIN</th>
+            <th>数量<br/>价格</th>
+            <th>报告时间<br/>更新时间</th>
+            <th>地址<br/>邮寄状态</th>
+            <th>包裹单号<br/>Ship Id</th>
+            <th>操作</th>
+        </tr>
+        <tr  th:each="row : ${listmap}">
+            <td><input type="checkbox" name="ids" class="id" th:value="${row.id}" th:text="${row.id}"/></td>
+            <td  th:text="${row.userName}"></td>
+            <td><span th:text="${row.modelNumber}"></span><br><span th:text="${row.productName}"></span></td>
+            <td><span th:text="${row.brand}"></span><br><span th:text="${row.SKU}"></span></td>
+            <td><span th:text="${row.quantity}"></span><br><span th:text="${row.price}"></span></td>
+            <td><span th:text="${row.createdTime}"></span><br><span th:text="${row.updateTime}"></span></td>
+            <td style="background-color:#a1ff64">
+                <span th:text="${row.shippingAddress}"></span><br>
+                <span th:text="${row.status}" ></span>
+            </td>
+            <td >
+                <button onclick="Simple_Update_Package(this);" th:value="${row.id}" class="btn btn-default">Update</button>
+                <button onclick="Simple_Send_Email(this);" th:value="${row.id}" class="btn btn-default">Email</button>
+            </td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+    function Simple_Update_Package(obj){
+            var zhi = obj.value;
+            window.location.href="/companyManager/toEditPackageByDoctorPage?packageListId="+zhi;
+    }
+
+    function Simple_Send_Email(obj){
+        var zhi = obj.value;
+        window.location.href="/companyManager/toSendEmailToUserPage?packageListId="+zhi;
+    }
+
+</script>

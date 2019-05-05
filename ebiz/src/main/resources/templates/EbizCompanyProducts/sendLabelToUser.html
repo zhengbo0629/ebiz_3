@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发送Label邮件</title>
+
+    <!-- 引入bootstrap样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    <!-- 引入中文语言包 -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+</head>
+
+<script type="text/javascript">
+    function sendEmail() {
+        $("#edit")
+            .ajaxSubmit(
+                {
+                    beforeSubmit : function() {
+                        // alert("我在提交表单之前被调用！");
+                    },
+                    success : function(data) {
+                        alert(data);
+                        history.go(-1);
+                    }
+                });
+
+    }
+</script>
+
+
+<body>
+<div class="container">
+
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>发送label</h3>
+
+            </div>
+            <h4 style="padding-bottom: 0px">
+                Package UID:&nbsp;
+                <span th:text="${vo.shippingAddress}"></span>&emsp;&emsp;UserName:&nbsp;<span th:text="${vo.userName}"></span>&emsp;&emsp;Email:&nbsp;<span th:text="${vo.email}"></span></h4>
+
+            <form name="edit" id="edit" action="/companyManager/sendLabeltoOneRecipient" method="post"  th:object="${vo}" enctype="multipart/form-data">
+                <br>
+                <table class="tablewithoutline">
+                    <tr>
+                        <td class="alignRight" style="width: 80px">邮寄地址：</td>
+                        <td style="font-size: 16px"><input type="text"
+                                                           id="balance" name="balance" readonly
+                                                           th:field = "*{shippingAddress}"
+                                                           style="width: 300px" required />&emsp;电子邮件:<input
+                                type="text" id="productValue" name="productValue" readonly
+                                th:field = "*{email}"
+                                style="width: 220px" required />
+                            &emsp;Last Name:<input
+                                    type="text" id="shouldPay" name="shouldPay" readonly
+                                    th:field = "*{lastName}"
+                                    style="width: 100px" required />
+                            &emsp;First Name:<input
+                                    type="text" id="nowPay" name="nowPay"
+                                    th:field = "*{firstName}"
+                                    style="width: 100px" required /></td>
+
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">包裹信息：</td>
+                        <td style="font-size: 14px"><textarea id="packagesInfor"
+                                                              name="packagesInfor" style="resize: none; font-size: 13px"
+                                                              rows="6" cols="150"
+                                                              placeholder="Packages Information" th:field = "*{packageListInfor}"></textarea></td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight" style="width: 80px">邮件内容：</td>
+                        <td style="font-size: 14px"><textarea id="emailContent"
+                                                              name="emailContent" style="resize: none; font-size: 13px"
+                                                              rows="3" cols="150"
+                                                              placeholder="email Content"></textarea></td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Tracking Number：</td>
+                        <td style="font-size: 14px"><textarea id="trackingInfor"
+                                                              name="trackingInfor" style="resize: none; font-size: 13px"
+                                                              rows="5" cols="150"
+                                                              placeholder="Tracking Number"></textarea></td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Ship ID：</td>
+                        <td style="font-size: 14px"><textarea id="shipId"
+                                                              name="shipId" style="resize: none; font-size: 13px"
+                                                              rows="3" cols="150"
+                                                              placeholder="Ship ID"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Labels：</td>
+                        <td style="font-size: 14px"><input type="file" id="files" name="files[]" multiple />
+                            <output id="list"></output>
+
+                            <textarea id="fileNames" name="fileNames"
+                                      style="background-color: transparent; resize: none; font-size: 13px;" rows="5"
+                                      cols="58" placeholder="File Names"></textarea></td>
+                    </tr>
+                </table>
+
+                <div align=center>
+                    <input type="submit" name="submit" value="Send Email"/>
+                </div>
+
+                <input style="width: 200px" type="hidden" id="packageId"
+                       name="packageId" value="<%=packageIDStrings%>"
+                       readonly="readonly" />
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

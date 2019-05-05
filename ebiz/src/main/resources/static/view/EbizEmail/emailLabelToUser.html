@@ -1,0 +1,203 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> Deal管理 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/getRequestParameters.js"></script>
+</HEAD>
+<BODY>
+
+<script>
+    function sendEmail() {
+        var tracking=document.getElementById('trackingInfor').value;
+        if(tracking.length<=5){
+            alert("Please input a Good Tracking Number, Click OK button to Complete the payment");
+            return;
+        }
+        var shipIDString=document.getElementById('shipId').value;
+        if(shipIDString.length<=5){
+            alert("Please input a Good ship ID, Click OK button to Complete the payment");
+            return;
+        }
+        var fileNames=document.getElementById('fileNames').value;
+
+        if(fileNames.length==0){
+            var msg = "Are you sure want to send email without attachement？\n\n Please confirm！";
+            if (confirm(msg)==false){
+                return;
+            }
+        }
+        $("#edit")
+            .ajaxSubmit(
+                {
+                    beforeSubmit : function() {
+                        // alert("我在提交表单之前被调用！");
+                    },
+                    success : function(data) {
+                        alert(data);
+                        if(!data.includes("Failed")){
+                            window.open("/view/EbizPackage/allUnLabeledPackForCompany.html" ,"_self");
+                        }else{
+                            alert("Something failed, please try it again");
+                        }
+                    }
+                });
+
+    }
+</script>
+
+<div class="container" >
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>发送label</h3>
+
+            </div>
+            <h4 style="padding-bottom: 0px">
+                Package UID:&nbsp;
+                <label id="id"></label>&emsp;&emsp;UserName:&nbsp;<label id="userName"></label>&emsp;&emsp;Email:&nbsp;<label id="email"></label></h4>
+
+            <form name="edit" id="edit" action="package/sendLabeltoOneRecipient" method="post" enctype="multipart/form-data">
+                <br>
+                <table class="tablewithoutline">
+                    <tr>
+                        <td class="alignRight" style="width: 80px">邮寄地址：</td>
+                        <td style="font-size: 16px">
+                            <input type="text" id="shippingAddress" name="balance" readonly style="width: 300px" required />&emsp;
+                            电子邮件:<input type="text" id="productValue" name="productValue" readonly style="width: 220px" required />
+                            &emsp;Last Name:<input type="text" id="shouldPay" name="shouldPay" readonly style="width: 100px" required />
+                            &emsp;First Name:<input type="text" id="nowPay" name="nowPay" style="width: 100px" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">包裹信息：</td>
+                        <td style="font-size: 14px">
+                            <textarea id="packagesInfor" name="packagesInfor" style="resize: none; font-size: 13px" rows="6" cols="150" placeholder="Packages Information"></textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight" style="width: 80px">邮件内容：</td>
+                        <td style="font-size: 14px"><textarea id="emailContent" name="emailContent" style="resize: none; font-size: 13px" rows="3" cols="150" placeholder="email Content"></textarea></td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Tracking Number：</td>
+                        <td style="font-size: 14px"><textarea id="trackingInfor" name="trackingInfor" style="resize: none; font-size: 13px" rows="5" cols="150" placeholder="Tracking Number"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Ship ID：</td>
+                        <td style="font-size: 14px"><textarea id="shipId" name="shipId" style="resize: none; font-size: 13px" rows="3" cols="150" placeholder="Ship ID"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Labels：</td>
+                        <td style="font-size: 14px">
+                            <input type="file" id="files" name="files[]" multiple />
+                            <output id="list"></output>
+                            <textarea id="fileNames" name="fileNames" style="background-color: transparent; resize: none; font-size: 13px;" rows="5" cols="58" placeholder="File Names"></textarea></td>
+                    </tr>
+                </table>
+                <div align=center>
+                    <input type="button" name="submit" value="Send Email" onClick="sendEmail()" />
+                </div>
+                <input style="width: 200px" type="hidden" id="packageId" name="packageId" readonly="readonly" />
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</BODY>
+<script type="text/javascript">
+    var params ;
+    $(document).ready(function () {
+        params = getParameters();
+        //初始化页面数据
+        initPage();
+    });
+
+    function initPage() {
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/package/findPackageByIds",
+            data: params,
+            async: true,
+            success: function (res) {
+                console.log(res)
+                layer.close(layerIndex);
+                if (res.data.state === "000000") {
+                    //console.log(res.data);
+                    //解析数据
+                    pushData(res);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        data = data.data;
+        console.log(data);
+        $("#id").innerText = data.uidNewString;
+        $("#email").innerText = data.email;
+        $("#userName").innerText = data.userName;
+        $("#productValue").val(data.email);
+        $("#packageListInfor").val(data.packageListInfor);
+        $("#packageId").val(data.packageIDStrings);
+        $("#shouldPay").val(data.lastName);
+        $("#nowPay").val(data.firstName);
+    }
+
+    //避免页面上出现 null
+    function emptyFormatter(data) {
+        if (!data) {
+            return ""
+        }
+        return data;
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+
+    //优化页面显示
+    function moneyFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        return data + " $";
+    }
+
+
+</script>
+</HTML>

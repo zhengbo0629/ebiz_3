@@ -1,0 +1,162 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 产品管理 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</HEAD>
+<BODY>
+
+<script>
+    function editProduct() {
+        $("#dataTable").ajaxSubmit(function (data) {
+            console.log(data);
+            alert(data.data.message);
+            if(data.data.state === "000000"){
+                window.open("/view/EbizProduct/ProductManager.html" ,"_self");
+            }
+        });
+        return false;
+    }
+</script>
+
+<div class="container" >
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>添加产品</h3>
+            </div>
+            <div align=center>
+                <div align=left style="width: 99%; float: left; border: 0px solid #d7d7d7; min-height: 400px; font-size:14px">
+                    <form name="edit"  id="dataTable" action="/product/add" onsubmit="return editProduct();"  method="post">
+                        <br>
+
+                        Model:&nbsp;<input
+                            style="width: 100px; height:25px "
+                            type="text" id="model" name="model"
+                             placeholder="required"/>&emsp;
+                        Status:&nbsp;
+                        <select id="status" name="status"
+                                style="height: 35px; width: 200px;">
+                            <option selected="selected" value="0">Please Chose</option>
+                            <option value="Active">Active</option>
+                            <option value="UnActive">UnActive</option>
+                            <option value="LiveDeal">LiveDeal</option>
+                            <option value="Deleted">Deleted</option>
+                        </select> <br>
+                        Product Name: length less than 250
+                        <textarea id="productName" name="productName"
+                                  style="background-color: transparent; resize: none;"
+                                  rows="2" cols="58"  placeholder="required"></textarea>
+                        <br>
+                        Brand:&nbsp;<input
+                            style="width: 120px; height:25px  "
+                            type="text" id="brand" name="brand"  placeholder="required"/> &emsp;
+                        SKU:&nbsp;<input
+                            style="width: 120px; height:25px "
+                            type="text" id="sku" name="sku"/>&emsp;
+                        UPC:&nbsp;<input
+                            style="width: 120px; height:25px  "
+                            type="text" id="upc" name="upc" />&emsp;
+                        ASIN:&nbsp;<input
+                            style="width: 120px; height:25px "
+                            type="text" id="asin" name="asin"/><br>
+                        Web Address:&nbsp;
+                        <input
+                                style="width: 89%; height:25px"
+                                type="text" id="uri" name="uri"/>
+                        <br>
+                        Tickets:&nbsp;<input
+                            style="width: 60px; height:25px  "
+                            type="number" id="tickets" name="tickets" min="0" step="1"/> &emsp;
+                        PersonalLimit:&nbsp;<input
+                            style="width: 60px; height:25px  "
+                            type="number" id="limitPerPerson" name="limitPerPerson" min="0" step="1"/>&emsp;
+                        W(LB):&nbsp;<input
+                            style="width: 60px; height:25px  "
+                            type="number" id="weight" name="weight"/>&emsp;L(inch):&nbsp;<input
+                            style="width: 60px; height:25px  "
+                            type="number" id="length" name="length"/>&emsp;W(inch):&nbsp;<input
+                            style="width: 60px; height:25px  "
+                            type="number" id="width" name="width"/>&emsp;H(inch):&nbsp;<input
+                            style="width: 60px; height:25px  "
+                            type="number" id="height" name="height"/><br><br>
+
+                        <div class="clear"></div>
+                        <div style="width:40%;float:left;border: 1px solid #CCC;padding:5px 5px 5px 5px;">
+                            下单到家里的收货价格：
+                            <br>
+                            <div style="float:left;">
+                                价格：<br>
+                                <input
+                                        style="width: 80px; height:25px  "
+                                        type="number" id="price" name="price"/>
+                            </div>
+                            <div style="float:left">
+                                加价收购数量：<br>
+                                <input
+                                        style="width: 80px; height:25px  "
+                                        type="number" id="promotQuantity" name="promotQuantity" min="0" step="1"/>
+                            </div>
+                            <div style="float:left">
+                                加价收购价格：<br>
+                                <input
+                                        style="width: 80px; height:25px  "
+                                        type="number" id="promotPrice" name="promotPrice"/>
+                            </div>
+
+
+
+                        </div>
+                        <div style="width:40%;float:left;border: 1px solid #CCC;padding:5px 5px 5px 5px;margin-left:10px">
+                            下单到仓库的收货价格：
+                            <br>
+                            <div style="float:left;">
+                                价格：<br>
+                                <input
+                                        style="width: 80px; height:25px  "
+                                        type="number" id="warehousePrice" name="warehousePrice"/>
+                            </div>
+                            <div style="float:left">
+                                加价收购数量：<br>
+                                <input
+                                        style="width: 80px; height:25px  "
+                                        type="number" id="warehousePromotQuantity" name="warehousePromotQuantity" min="0" step="1" />
+                            </div>
+                            <div style="float:left">
+                                加价收购价格：<br>
+                                <input
+                                        style="width: 80px; height:25px  "
+                                        type="number" id="warehousePromotePrice" name="warehousePromotePrice"/>
+                            </div>
+                        </div>
+                        <div class="clear"></div><br>
+
+                        Note:<br>
+                        <textarea id="userNote" name="userNote"
+                                  style="background-color: transparent; resize: none;"
+                                  rows="2" cols="58"></textarea>
+                        <br>
+                        <div align=center>
+                            <input type="reset" name="reset" style="display: none;" />
+                            <button type="submit"  class="btn btn-default">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</BODY>
+</HTML>

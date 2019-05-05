@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <title>更新信用卡信息</title>
+</head>
+<body>
+    <div class="container">
+        <div id="wrapper">
+            <div
+                    id="wrapperContent">
+
+                <div id="threeBox">
+                    <div class="alignleft">
+                        <input onclick="updateAllSelected()" type="button" value="批量更新"
+                               name="updateAll"
+                               style="margin-top: 0px; width: 75px; font-size: 12px; height: 25px; background-color: #ffcebf">
+                    </div>
+                    <div class="aligncenter">
+                        <h3>未支付的包裹(UnPaid)</h3>
+                    </div>
+                </div>
+                <div style="width: 100%; overflow: auto;">
+
+                    <table>
+                        <col width=5%>
+                        <col width=40%>
+                        <col width=1%>
+                        <col width=13%>
+                        <col width=13%>
+                        <col width=16%>
+                        <col width=6%>
+                        <tr>
+                            <th>UID</th>
+                            <th>Model<br>ProductName
+                            </th>
+                            <th>Quantity<br>Price
+                            </th>
+
+                            <th>Address
+                            </th>
+                            <th>Report Time<br>Update Time
+                            </th>
+                            <th>CreditCard<br>Pay Infor
+                            </th>
+                            <th>Status</th>
+                            <th>操作</th>
+
+                        </tr>
+
+                        <tr th:each="row : ${listmap}">
+                            <td ><span th:value="${row.id},${row.quantity},${row.price},${row.creditcardNumber}"></span></td>
+                            <td><span th:value="${row.modelNumber}"></span><br><span th:value="${row.productName}"></span></td>
+                            <td><span th:value="${row.quantity}"></span><br><span th:value="${row.price}"></span></td>
+
+                            <td><span th:value="${row.shippingAddress}"></span></td>
+
+                            <td style='font-size: 10px'><span th:value="${row.createdTime}"></span><br><span th:value="${row.updateTime}"></span></td>
+                            <td><span th:value="${row.creditCardNumber}"></span></td>
+                            <td style='font-size: 10px'><span th:value="${row.getStatus()}"></span></td>
+                            <td >
+                                <button onclick="Simple_collection_task(this);" th:value="${row.id}" class="btn btn-default">Update</button>
+                            </td>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+    //需要注意的是单个更新操作和批量操作页面不一致
+    function Batch_collection_task(){
+        var idsstr = "";
+        var zhi = "";
+
+        $("input[name='ids']").each(function () {
+            idsstr += $(this).val() + ";"; //获取所有checkbox的值
+            if($(this).is(":checked")) //如果被选中
+                zhi += $(this).val() + ";"; //获取被选中的值
+            //alert(zhi);
+        })
+
+
+        //alert(zhi);
+        if(zhi == ""){
+            alert("您还未选择任何数据，请选择");
+        }else{
+            //发出批量领取的任务操作Ajax
+            $.ajax({
+                url: '/taskManager/toUpdateCreditCardForPackagesPage',
+                method: 'post',
+                data :{'packageIds':zhi} ,
+                success : function (data) {
+                    alert(data);
+                },
+                error : function () {
+                    alert("failure");
+                }
+            });
+        }
+    }
+
+    function Simple_collection_task(obj){
+        //alert(obj)
+        console.log(obj)
+        var zhi = obj.value;
+        //发出单个领取的任务操作Ajax
+        $.ajax({
+            url: '/task/toUpdateCreditCardPage',
+            method: 'post',
+            data :{'packageId':zhi} ,
+            success : function (data) {
+                alert(data);
+                //alert("success");
+            },
+            error : function () {
+                alert("failure");
+            }
+        });
+    }
+</script>
+
+
+</html>

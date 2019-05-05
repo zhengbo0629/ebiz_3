@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ebiz.dao.AgencyTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.ebiz.model.AgencyTask" >
+    <id column="ATid" property="ATid" jdbcType="INTEGER" />
+    <result column="productId" property="productId" jdbcType="VARCHAR" />
+    <result column="buyerId" property="buyerId" jdbcType="VARCHAR" />
+    <result column="agentId" property="agentId" jdbcType="VARCHAR" />
+    <result column="buyerName" property="buyerName" jdbcType="VARCHAR" />
+    <result column="buyerTel" property="buyerTel" jdbcType="VARCHAR" />
+    <result column="buyerAddress" property="buyerAddress" jdbcType="VARCHAR" />
+    <result column="buyerLeaveMag" property="buyerLeaveMag" jdbcType="VARCHAR" />
+    <result column="taskStatus" property="taskStatus" jdbcType="VARCHAR" />
+    <result column="createdTime" property="createdTime" jdbcType="VARCHAR" />
+    <result column="createBy" property="createBy" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="updateBy" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ATid, productId, buyerId, agentId, buyerName, buyerTel, buyerAddress, buyerLeaveMag, 
+    taskStatus, createdTime, createBy, updateTime, updateBy
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ebiz.model.AgencyTaskExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from agencytask
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from agencytask
+    where ATid = #{ATid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from agencytask
+    where ATid = #{ATid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ebiz.model.AgencyTaskExample" >
+    delete from agencytask
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ebiz.model.AgencyTask" >
+    insert into agencytask (ATid, productId, buyerId, 
+      agentId, buyerName, buyerTel, 
+      buyerAddress, buyerLeaveMag, taskStatus, 
+      createdTime, createBy, updateTime, 
+      updateBy)
+    values (#{ATid,jdbcType=INTEGER}, #{productId,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, 
+      #{agentId,jdbcType=VARCHAR}, #{buyerName,jdbcType=VARCHAR}, #{buyerTel,jdbcType=VARCHAR}, 
+      #{buyerAddress,jdbcType=VARCHAR}, #{buyerLeaveMag,jdbcType=VARCHAR}, #{taskStatus,jdbcType=VARCHAR}, 
+      #{createdTime,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ebiz.model.AgencyTask" >
+    insert into agencytask
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ATid != null" >
+        ATid,
+      </if>
+      <if test="productId != null" >
+        productId,
+      </if>
+      <if test="buyerId != null" >
+        buyerId,
+      </if>
+      <if test="agentId != null" >
+        agentId,
+      </if>
+      <if test="buyerName != null" >
+        buyerName,
+      </if>
+      <if test="buyerTel != null" >
+        buyerTel,
+      </if>
+      <if test="buyerAddress != null" >
+        buyerAddress,
+      </if>
+      <if test="buyerLeaveMag != null" >
+        buyerLeaveMag,
+      </if>
+      <if test="taskStatus != null" >
+        taskStatus,
+      </if>
+      <if test="createdTime != null" >
+        createdTime,
+      </if>
+      <if test="createBy != null" >
+        createBy,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="updateBy != null" >
+        updateBy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ATid != null" >
+        #{ATid,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null" >
+        #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null" >
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerTel != null" >
+        #{buyerTel,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerAddress != null" >
+        #{buyerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerLeaveMag != null" >
+        #{buyerLeaveMag,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        #{taskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ebiz.model.AgencyTaskExample" resultType="java.lang.Integer" >
+    select count(*) from agencytask
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update agencytask
+    <set >
+      <if test="record.ATid != null" >
+        ATid = #{record.ATid,jdbcType=INTEGER},
+      </if>
+      <if test="record.productId != null" >
+        productId = #{record.productId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerId != null" >
+        buyerId = #{record.buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.agentId != null" >
+        agentId = #{record.agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerName != null" >
+        buyerName = #{record.buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerTel != null" >
+        buyerTel = #{record.buyerTel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerAddress != null" >
+        buyerAddress = #{record.buyerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerLeaveMag != null" >
+        buyerLeaveMag = #{record.buyerLeaveMag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskStatus != null" >
+        taskStatus = #{record.taskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdTime != null" >
+        createdTime = #{record.createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createBy != null" >
+        createBy = #{record.createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        updateTime = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateBy != null" >
+        updateBy = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update agencytask
+    set ATid = #{record.ATid,jdbcType=INTEGER},
+      productId = #{record.productId,jdbcType=VARCHAR},
+      buyerId = #{record.buyerId,jdbcType=VARCHAR},
+      agentId = #{record.agentId,jdbcType=VARCHAR},
+      buyerName = #{record.buyerName,jdbcType=VARCHAR},
+      buyerTel = #{record.buyerTel,jdbcType=VARCHAR},
+      buyerAddress = #{record.buyerAddress,jdbcType=VARCHAR},
+      buyerLeaveMag = #{record.buyerLeaveMag,jdbcType=VARCHAR},
+      taskStatus = #{record.taskStatus,jdbcType=VARCHAR},
+      createdTime = #{record.createdTime,jdbcType=VARCHAR},
+      createBy = #{record.createBy,jdbcType=VARCHAR},
+      updateTime = #{record.updateTime,jdbcType=VARCHAR},
+      updateBy = #{record.updateBy,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ebiz.model.AgencyTask" >
+    update agencytask
+    <set >
+      <if test="productId != null" >
+        productId = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        buyerId = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null" >
+        agentId = #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null" >
+        buyerName = #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerTel != null" >
+        buyerTel = #{buyerTel,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerAddress != null" >
+        buyerAddress = #{buyerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerLeaveMag != null" >
+        buyerLeaveMag = #{buyerLeaveMag,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        taskStatus = #{taskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        createdTime = #{createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        createBy = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null" >
+        updateBy = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ATid = #{ATid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ebiz.model.AgencyTask" >
+    update agencytask
+    set productId = #{productId,jdbcType=VARCHAR},
+      buyerId = #{buyerId,jdbcType=VARCHAR},
+      agentId = #{agentId,jdbcType=VARCHAR},
+      buyerName = #{buyerName,jdbcType=VARCHAR},
+      buyerTel = #{buyerTel,jdbcType=VARCHAR},
+      buyerAddress = #{buyerAddress,jdbcType=VARCHAR},
+      buyerLeaveMag = #{buyerLeaveMag,jdbcType=VARCHAR},
+      taskStatus = #{taskStatus,jdbcType=VARCHAR},
+      createdTime = #{createdTime,jdbcType=VARCHAR},
+      createBy = #{createBy,jdbcType=VARCHAR},
+      updateTime = #{updateTime,jdbcType=VARCHAR},
+      updateBy = #{updateBy,jdbcType=VARCHAR}
+    where ATid = #{ATid,jdbcType=INTEGER}
+  </update>
+</mapper>

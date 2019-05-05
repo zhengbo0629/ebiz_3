@@ -1,0 +1,238 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 包裹管理 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</HEAD>
+<BODY>
+<div class="container-fluid">
+    <h3>未发货包裹</h3>
+    <form class="container-fluid form-inline" id="searchForm">
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" class="form-control mx-2 mt-2 mt-2" id="id" name="id">
+        </div>
+        <div class="form-group">
+            <label for="userName">用户名:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="userName" name="userName">
+        </div>
+        <div class="form-group">
+            <label for="brand">品牌:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="brand" name="brand">
+        </div>
+        <div class="form-group">
+            <label for="modelNumber">型号:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="modelNumber" name="modelNumber">
+        </div>
+        <div class="form-group">
+            <label for="trackingNumber">运单号:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="trackingNumber" name="trackingNumber">
+        </div>
+        <div class="form-group">
+            <label for="UPC">UPC:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="UPC" name="UPC">
+        </div>
+        <div class="form-group d-none">
+            <label for="status">邮寄状态:</label>
+            <select type="text" class="form-control mx-2 mt-2" id="status" name="status">
+                <option></option>
+                <option>Number UnMatch</option>
+                <option>UPC UnMatch</option>
+                <option>UPC and Num UnMatch</option>
+                <option>Deleted</option>
+                <option>UnConfirmed InStock</option>
+                <option>UnConfirmed UnReceived</option>
+                <option>UnConfirmed UnPlaced</option>
+                <option>InStock</option>
+                <option selected>UnReceived</option>
+                <option>Packed</option>
+                <option>Delivered</option>
+                <option>EmailedLabel</option>
+                <option>Shipped</option>
+                <option>Complete</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="payStatus">支付状态:</label>
+            <select type="text" class="form-control mx-2 mt-2" id="payStatus" name="payStatus">
+                <option></option>
+                <option>Paid</option>
+                <option>UnPaid</option>
+                <option>Paying</option>
+                <option>PartlyPaid</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="shippingAddress">仓库:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="shippingAddress" name="shippingAddress">
+        </div>
+        <div class="form-group mb-2">
+            <button class="btn btn-primary pull-right mx-2 mt-2" type="button" onclick="query()">查询</button>
+            <button class="btn btn-default pull-right mx-2 mt-2" type="reset" onclick="query()">重置</button>
+        </div>
+    </form>
+
+    <table class="table table-hover table-bordered" id="dataTable">
+        <thead>
+        <tr>
+            <th width="5%">UID</th>
+            <th width="5%">用户名</th>
+            <th width="20%">型号<br>产品名</th>
+            <th width="10%">Brand:UPC<br>SKU:ASIN</th>
+            <th width="5%">数量<br>价格</th>
+            <th width="10%">报告时间<br>更新时间</th>
+            <th width="15%">地址:邮寄状态:<br>包裹单号:Ship Id</th>
+            <th width="15%">支付状态<br>支付信息</th>
+            <th width="10%">报单:对单<br>发单:支付</th>
+            <th width="5%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container-fluid split-page">
+    <label class="split-page-item" for="pageSize">每页</label>
+    <select class="form-control split-page-item" style="width:70px;" id="pageSize">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>30</option>
+    </select>
+    <label class="split-page-item">条</label>
+    <label class="split-page-item">共<span id="totalCount"></span>条</label>
+    <label class="split-page-item"><a href="#" id="firstPage">首页</a></label>
+    <label class="split-page-item"><a href="#" id="prePage">上一页</a></label>
+    <label class="split-page-item">跳转 :</label>
+    <label class="split-page-item">
+        <input type="text" class="form-control" id="pageIndex" style="width:60px;">
+    </label>
+    <label class="split-page-item">/<span id="totalPages"></span></label>
+    <label class="split-page-item"><a href="#" id="nextPage">下一页</a></label>
+    <label class="split-page-item"><a href="#" id="lastPage">末页</a></label>
+    <label class="split-page-item"><a href="#" id="refresh">刷新</a></label>
+</div>
+
+</BODY>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //初始化分页控制按钮事件
+        initSplitPage();
+        //初始化页面数据
+        initPage();
+
+        $('#dataTable').on('dblclick', 'tr', function () {
+            //得到当前所在行
+            var id = $(this).find('td').eq(0).html();
+            $(window).attr('location', '/view/EbizPackage/editUnreceivedPackage.html?id=' + id);
+        });
+    });
+
+    function query() {
+        pageIndex = 1;
+        pageSize = $("#pageSize").val();
+        initPage();
+    }
+
+    function initPage() {
+        //序列化搜索框
+        var params = $("#searchForm").serialize();
+        if (params && params.length > 0) {
+            params = params + "&"
+        }
+        //加上分页数据
+        params = params + "pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'POST',
+            url: "/package/list",
+            data: params,
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    //console.log(res.data);
+                    //解析数据
+                    pushData(res.data);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        var page = res.page;
+        $("#totalCount").text(page.totalCount);
+        $("#totalPages").text(page.totalPages);
+        $("#pageIndex").val(page.pageIndex);
+        for (var i = 0; i < data.length; i++) {
+            var row =
+                '<tr>' +
+                '<td>' + data[i].id + '</td>' +
+                '<td>' + data[i].userName + '</td>' +
+                '<td>' + data[i].modelNumber + '<br>' + data[i].productName + '</td>' +
+                '<td>' + emptyFormatter(data[i].brand) + '<br>' + emptyFormatter(data[i].UPC) + '<br>' + emptyFormatter(data[i].SKU) + '<br>' + emptyFormatter(data[i].ASIN) + '</td>' +
+                '<td>' + data[i].quantity + '<br>' + moneyFormatter(data[i].price) + '</td>' +
+                '<td>' + data[i].createdTime + '<br>' + data[i].updateTime + '</td>' +
+                '<td>' + data[i].shippingAddress + '<br>' + statusFormatter(data[i].status) + '<br>' + emptyFormatter(data[i].trackingNumber) + '<br>' + emptyFormatter(data[i].shipID) + '</td>' +
+                '<td>' + data[i].payStatus + '<br>' + data[i].creditCardNumber + '</td>' +
+                '<td>' + emptyFormatter(data[i].checker) + '<br>' + emptyFormatter(data[i].labeler) + '<br>' + emptyFormatter(data[i].payer) + '</td>' +
+                '<td>' + funFormatter(data[i].id) + '</td>' +
+                '</tr>';
+            $("#dataTable tr:last").after(row);
+        }
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+
+    function fun(id) {
+        $(window).attr('location', '/view/EbizPackage/editUnreceivedPackage.html?id=' + id);
+    }
+
+    function funFormatter(id) {
+        return '<a class="text-info" onclick="fun(' + id + ')">' + ' 更新</a>'
+    }
+</script>
+</HTML>

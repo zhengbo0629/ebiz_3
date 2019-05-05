@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发送Label邮件</title>
+
+    <!-- 引入bootstrap样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    <!-- 引入中文语言包 -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+</head>
+
+<script type="text/javascript">
+    function sendEmail() {
+        $("#edit")
+            .ajaxSubmit(
+                {
+                    beforeSubmit : function() {
+                        // alert("我在提交表单之前被调用！");
+                    },
+                    success : function(data) {
+                        alert(data);
+                        history.go(-1);
+                    }
+                });
+
+    }
+</script>
+
+
+<body>
+<div class="container">
+
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>发送邮件</h3>
+            </div>
+
+            <div align=center>
+                <div align=left
+                     style="width: 99%; float: left; border: 0px solid #d7d7d7; min-height: 400px; font-size: 14px">
+                    <form name="edit" id="edit" th:object="${packageList}" action="sendEmailtoOneRecipient" method="post" enctype="multipart/form-data">
+                        <br>
+                        User Name: <input style="width: 80px; height: 25px" type="text"
+                                          id="username" name="username" th:field="*{userName}"
+                                          readonly="readonly" />&emsp;
+
+                        Product UID: <input style="width: 60px; height: 25px" type="text"
+                                            id="productID" name="productID" th:field="*{id}"
+                                            readonly="readonly" />&emsp;
+                        Model:&nbsp;<input style="width: 100px; height: 25px" type="text"
+                                           id="model" name="model" th:field="*{modelNumber}" placeholder="required" readonly="readonly" />&emsp;
+                        Status:&nbsp;
+                        <select id="status" name="status"
+                                style="height: 35px; width: 150px;">
+                            <option selected="selected" value="0">Please Chose</option>
+
+                            <option th:each="row : ${EbizPackageStatusEnums}" th:value="${row.columnName}" th:text="${row.columnName}"></option>
+
+                        </select> Brand:&nbsp;<input style="width: 120px; height: 25px"
+                                                     type="text" id="productBrand" name="productBrand"
+                                                     placeholder="required" th:field="*{brand}" />
+                        <br> Product Name:
+                        <textarea id="productName" name="productName"
+                                  style="background-color: transparent; resize: none;" rows="2"
+                                  cols="58" placeholder="required" th:field="*{productName}"></textarea>
+                        <br> <br>
+
+                        <div class="clear"></div>
+                        EmailAddress: <input style="width: 20%; height: 25px"
+                                             type="text" id="emailAddress" name="emailAddress"
+                                             th:field="*{email}" placeholder="Emial Address" />&emsp;
+                        EmailTitle: <input style="width: 50%; height: 25px"
+                                           type="text" id="emailTitle" name="emailTitle"
+                                           value="发送包裹信息" placeholder="Emial Title" /><br> <br>
+                        EmailContent(添加邮件内容) 可以在这里写一些注意事项:<br>
+                        <textarea id="emailContent" name="emailContent"
+                                  style="background-color: transparent; resize: none;" rows="10"
+                                  cols="58" placeholder="Emial Content"></textarea>
+                        <br><br>
+
+                        AttachedFile:<br>
+
+                        <input type="file" id="files" name="files[]" multiple />
+                        <output id="list"></output>
+
+                        <textarea id="fileNames" name="fileNames"
+                                  style="background-color: transparent; resize: none;" rows="5"
+                                  cols="58" placeholder="File Names"></textarea>
+                        <div align=center>
+                            <input type="button" name="submit" value="Send Email"
+                                   onClick="sendEmail()" />
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

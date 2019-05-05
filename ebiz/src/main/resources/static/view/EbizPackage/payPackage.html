@@ -1,0 +1,214 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 产品管理 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/getRequestParameters.js"></script>
+</HEAD>
+<BODY>
+
+<script>
+    function editPackage() {
+        $("#searchForm").ajaxSubmit(function (data) {
+            console.log(data);
+            alert(data.data.message);
+            if(data.data.state === "000000"){
+                window.open("/view/EbizPackage/list.html" ,"_self");
+            }else{
+                location.reload();
+            }
+        });
+        return false;
+    }
+</script>
+
+
+<div class="container">
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>支付包裹</h3>
+
+            </div>
+            <h4 style="padding-bottom: 0px">
+                Package UID:&nbsp;
+                <input type="text" readonly id="uidNewString"/>&emsp;&emsp;UserName:&nbsp;<input type="text" readonly id="userName"/>&emsp;&emsp;Email:&nbsp;<input type="text" readonly id="email"/></h4>
+
+            <form name="edit" id="edit" action="sendMoneytoOneRecipientServlet" method="post" enctype="multipart/form-data">
+                <br>
+                <table class="tablewithoutline">
+                    <tr>
+                        <td class="alignRight" style="width: 80px">账户余额：</td>
+                        <td style="font-size: 16px"><input type="text"
+                                                           id="balance" name="balance" readonly
+                                                           style="width: 120px" required />&emsp;商品价值:<input
+                                type="text" id="value" name="value" readonly
+                                style="width: 100px" required />
+                            &emsp;应该支付:<input
+                                    type="text" id="shouldpay" name="shouldpay" readonly
+                                    style="width: 100px" required />
+                            &emsp;实际支付:<input
+                                    type="number" id="nowPay" name="nowPay"
+                                    style="width: 100px" required /></td>
+
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">信用卡信息：</td>
+                        <td style="font-size: 14px"><textarea id="creditString"
+                                                              name="creditString" style="resize: none; font-size: 13px"
+                                                              rows="8" cols="150"
+                                                              placeholder="Credit Card Information"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">包裹信息：</td>
+                        <td style="font-size: 14px"><textarea id="packageListInfor"
+                                                              name="packageListInfor" style="resize: none; font-size: 13px"
+                                                              rows="6" cols="150"
+                                                              placeholder="Packages Information"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">邮件内容：</td>
+                        <td style="font-size: 14px"><textarea id="emailContent"
+                                                              name="emailContent" style="resize: none; font-size: 13px"
+                                                              rows="3" cols="150"
+                                                              placeholder="email Content"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">确认码：</td>
+                        <td style="font-size: 14px"><input
+                                type="text" id="confirmCode" name="confirmCode"
+                                style="width: 300px" required /></td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">附件：</td>
+                        <td style="font-size: 14px"><input type="file" id="files" name="files[]" multiple />
+                            <output id="list"></output>
+
+                            <textarea id="fileNames" name="fileNames"
+                                      style="background-color: transparent; resize: none; font-size: 13px;" rows="5"
+                                      cols="58" placeholder="File Names"></textarea></td>
+                    </tr>
+                </table>
+
+                <div align=center>
+                    <input type="button" name="submit" value="Submit"
+                           onClick="sendEmail()" />
+                </div>
+
+                <input style="width: 200px" type="hidden" id="packageId"
+                       name="packageId" value="<%=packageIDStrings%>"
+                       readonly="readonly" />
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript">
+    var params ;
+    $(document).ready(function () {
+        params = getParameters();
+        //初始化页面数据
+        initPage();
+    });
+
+    function initPage() {
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/package/payPackage",
+            data: params,
+            async: true,
+            success: function (res) {
+                console.log(res)
+                layer.close(layerIndex);
+                if (res.data.state === "000000") {
+                    //console.log(res.data);
+                    //解析数据
+                    pushData(res);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        data = data.data;
+        console.log(data);
+        $("#uidNewString").val(data.uidNewString);
+        $("#packageIDStrings").val(data.packageIDStrings);
+        $("#userName").val(data.userName);
+        $("#email").val(data.email);
+        $("#balance").val(data.balance);
+        $("#value").val(data.value);
+        $("#shouldpay").val(data.shouldpay);
+        $("#nowPay").val(data.nowPay);
+        $("#creditString").val(data.creditString);
+        $("#packageListInfor").val(data.packageListInfor);
+        $("#emailContent").val(data.emailContent);
+        $("#confirmCode").val(data.confirmCode);
+        $("#width").val(data.width);
+        $("#height").val(data.height);
+        $("#price").val(data.price);
+        $("#creditCardNumber").val(data.creditCardNumber);
+        $("#trackingNumber").val(data.trackingNumber);
+        $("#shipID").val(data.shipID);
+        $("#note").val(data.note);
+    }
+
+    //避免页面上出现 null
+    function emptyFormatter(data) {
+        if (!data) {
+            return ""
+        }
+        return data;
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+
+    //优化页面显示
+    function moneyFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        return data + " $";
+    }
+
+    //单个产品进行修改
+    function Simple_Update_Product(obj){
+        window.location.href="/view/EbizProduct/toEditProductPage?productId="+obj;
+    }
+</script>
+</html>

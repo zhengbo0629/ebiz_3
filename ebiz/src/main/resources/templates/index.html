@@ -1,0 +1,148 @@
+<!DOCTYPE>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>EastEbiz</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+    <style>
+        #content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            margin: 0;
+        }
+
+        .dropdown-menu {
+            top: 90%;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top" id="nav">
+    <a class="navbar-brand" href="/">EastEBiz</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown" th:if="${session.menus ne null}" th:each="menu:${session.menus}">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
+                   th:if="${menu.getMenuItems().size() gt 0}">
+                    <span th:text="${menu.getChinese()}"></span>
+                </a>
+                <div class="dropdown-menu" th:if="${menu.getMenuItems().size() gt 0}">
+                    <a class="dropdown-item" th:each="item:${menu.getMenuItems()}"
+                       th:href="${item.getLink()}">
+                        <span th:text="${item.getChinese()}"></span>
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/view/About/usage.html">使用方法</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/view/About/contract.html">联系方式</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/view/About/privacyPolicy.html">Privacy Policy</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-end">
+            <li class="nav-item dropdown" th:if="${session.currentUser ne null}">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                    <span th:text="${session.currentUser.getUserName()}"></span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/view/EbizUser/userAccountSetting.html">账户设置</a>
+                    <a class="dropdown-item" href="/view/CompanyInfo/companyAccountSetting.html">公司账户设置</a>
+                    <a class="dropdown-item" href="/view/CompanyInfo/userManual.html">用户手册</a>
+                    <a class="dropdown-item" href="/user/logout">退出登陆</a>
+                </div>
+            </li>
+            <li class="nav-item" th:if="${session.currentUser eq null}">
+                <a class="nav-link" href="/view/EbizUser/login.html">登录</a>
+            </li>
+            <li class="nav-item" th:if="${session.currentUser eq null}">
+                <a class="nav-link" href="/view/EbizUser/register.html">注册</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid" id="contentFrame">
+    <iframe id="content" th:if="${session.currentUser eq null}" src="/view/EbizUser/login.html">
+    </iframe>
+    <iframe id="content" th:if="${session.currentUser ne null}" th:src="${session.defaultPage}">
+    </iframe>
+</div>
+
+<script>
+    var contentFrame, nav ;
+
+    function onWindowResize() {
+        contentFrame.style.marginTop = (parseInt(nav.offsetHeight) + 10) + "px";
+        contentFrame.style.height = window.innerHeight - nav.offsetHeight - 30 + "px";
+    }
+
+    function init() {
+        contentFrame = document.getElementById("contentFrame");
+        nav = document.getElementById("nav");
+        contentFrame.style.marginTop = (parseInt(nav.offsetHeight) + 10) + "px";
+        contentFrame.style.height = window.innerHeight - nav.offsetHeight - 30 + "px";
+        window.addEventListener('resize', onWindowResize, false);
+    }
+
+    $(document).ready(function () {
+        init();
+        $(document).on("click", ".dropdown-item , .nav-link", function () {
+            console.log(window.location.host);
+            console.log("---:" + this.href);
+            if (this.href === "http://" + window.location.host + "/"
+                || this.href === "http://" + window.location.host + "/#"
+                || this.href === undefined || this.href === '') {
+                return;
+            } else {
+                if (this.href.indexOf("/user/logout") > -1) {
+                    console.log("退出登录");
+                    $.ajax({
+                        type: 'GET',
+                        url: "/user/logout",
+                        data: {},
+                        async: true,
+                        success: function (res) {
+                            window.location.href = "/";
+                        }, error: function (res) {
+                            window.location.href = "/";
+                        }, complete: function (res) {
+                            window.location.href = "/";
+                        }
+                    });
+                } else {
+                    $("#content").attr("src", this.href);
+                }
+            }
+            return false;
+        });
+        $(".navbar .dropdown").mouseover(function () {
+            $(this).addClass("show");
+            $(this).find(".dropdown-menu").addClass("show");
+        });
+        $(".navbar .dropdown").mouseout(function () {
+            $(this).removeClass("show");
+            $(this).find(".dropdown-menu").removeClass("show");
+        });
+        $(".navbar .dropdown-menu").mouseout(function () {
+            $(this).removeClass("show");
+        })
+    });
+</script>
+</body>
+</html>

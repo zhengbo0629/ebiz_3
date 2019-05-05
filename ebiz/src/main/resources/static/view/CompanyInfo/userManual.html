@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>主账户管理</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<style>
+    .manual {
+        white-space: pre-wrap;
+    }
+</style>
+<body>
+<h2>用户手册</h2>
+
+<div class="container-fluid">
+    <label class="container-fluid manual" id="userManual"></label>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        initPage();
+    });
+
+    function initPage() {
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/company/user-manual",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    pushDataUserManual(res.data);
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res.message);
+            }
+        });
+    }
+
+    function pushDataUserManual(data) {
+        var maunal = '';
+        if (data) {
+            maunal = data.replace(/aa/g, "<br>");
+        }
+        console.log(maunal)
+        $("#userManual").text(maunal);
+    }
+</script>
+</html>

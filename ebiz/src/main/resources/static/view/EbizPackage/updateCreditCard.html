@@ -1,0 +1,195 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 更新信用卡信息 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/getRequestParameters.js"></script>
+</HEAD>
+<BODY>
+
+<script>
+    function editPackage() {
+        $("#edit").ajaxSubmit(function (data) {
+            console.log(data);
+            alert(data.data.message);
+            if(data.data.state === "000000"){
+                window.open("/view/EbizPackage/unPaidPac.html" ,"_self");
+            }else{
+                location.reload();
+            }
+        });
+        return false;
+    }
+
+    function quantityChange(){
+        var oldQuantity=parseInt(document.getElementById("quantity").defaultValue);
+        var newQuantity=parseInt(document.getElementById("quantity").value);
+        if(newQuantity>oldQuantity){
+            document.getElementById("quantity").value=oldQuantity;
+            alert("Please Contact the Administrator to increase the Total Quantity");
+            return;
+        }
+        if(newQuantity==0){
+            document.getElementById("quantity").value=oldQuantity;
+            alert("Can not change quantity to 0");
+            return;
+        }
+    }
+</script>
+
+
+<div class="container">
+    <div id="wrapper">
+        <div
+                id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>更新信用卡信息</h3>
+            </div>
+
+            <div align=center>
+                <div align=left style="width: 50%; float: center; border: 0px solid #d7d7d7; min-height: 400px;">
+                    <form name="edit" id="edit" onsubmit="return editPackage();" action="/package/editUnreceivedPack" method="post">
+                        <br>
+                        <h4 style="padding-bottom: 0px">
+                            Package UID:<label id="id" ></label></h4>
+                        <br>
+                        <h4 style="padding-bottom: 0px">Product Name:</h4>
+                        <textarea id="productName" name="productName" style="border: none; background-color: transparent; resize: none;" rows="4" cols="58" readonly></textarea>
+                        <br> <br>
+                        <h4 style="padding-bottom: 0px">Shipping Address:</h4>
+                        <input style="width: 420px; border: none; background-color: transparent;" type="text" id="shippingAddress" name="shippingAddress" readonly="readonly" /> <br>
+                        <br>
+                        <h4 style="padding-bottom: 0px">Total Quantity:</h4>
+                        <input style="width: 420px;" type="number" id="quantity" name="quantity"  readonly="readonly" onchange="quantityChange()" /> <br> <br>
+                        <h4 style="padding-bottom: 0px">CreditCard Information:</h4>
+                        <br>
+                        提交后写在这里的内容将会替换掉所选中包裹的信用卡信息：
+                        <br>
+                        第一次使用的信用卡请在信用卡号后面填写开卡银行和银行payment 地址信息：
+                        <br>
+                        多张卡的话请在这里计算分配好金额后再提交：
+                        <br><br>
+                        <textarea id="creditCardNumber" name="creditcard" style="resize: none;" rows="8" cols="58"></textarea><br><br>
+                        <input style="width: 200px" type="hidden" id="basePrice" name="basePrice" readonly="readonly" />
+                        <input style="width: 200px" type="hidden" id="promPrice" name="promPrice" readonly="readonly" />
+                        <input style="width: 200px" type="hidden" id="promQuantity" name="promQuantity" readonly="readonly" />
+                        <input style="width: 200px" type="hidden" id="packageId" name="packageId" readonly="readonly" />
+                        <label style="font-size:18px; display:none" for="InStock" > InStock?</label>
+                        <input type="checkBox" id="InStock" name="InStock" value="InStock" style="display:none"/>
+                        <br>
+                        <br>
+                        <div align=center>
+                            <input type="submit" value="submit"/>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<script type="text/javascript">
+    var params ;
+    $(document).ready(function () {
+        params = getParameters();
+        //初始化页面数据
+        initPage();
+    });
+
+    function initPage() {
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/package/findPackageById",
+            data: params,
+            async: true,
+            success: function (res) {
+                console.log(res)
+                layer.close(layerIndex);
+                if (res.data.state === "000000") {
+                    //console.log(res.data);
+                    //解析数据
+                    pushData(res);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        data = data.data;
+        console.log(data);
+        $("#id").html(data.id);
+        $("#modelNumber").val(data.modelNumber);
+        $("#shippingAddress").val(data.shippingAddress);
+        $("#productName").val(data.productName);
+        $("#creditCardNumber").val(data.creditCardNumber);
+        $("#basePrice").val(data.basePrice);
+        $("#promPrice").val(data.promPrice);
+        $("#promQuantity").val(data.promQuantity);
+        $("#packageId").val(data.id);
+        $("#quantity").val(data.quantity);
+    }
+
+    //避免页面上出现 null
+    function emptyFormatter(data) {
+        if (!data) {
+            return ""
+        }
+        return data;
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+
+    //优化页面显示
+    function moneyFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        return data + " $";
+    }
+
+    //单个产品进行修改
+    function Simple_Update_Product(obj){
+        window.location.href="/view/EbizProduct/toEditProductPage?productId="+obj;
+    }
+
+
+
+</script>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>更新包裹信息页面管理</title>
+
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+</head>
+
+<script type="text/javascript">
+    function customSearch (){
+        $("form").submit();
+    }
+
+    $(function(){
+        $(".pagination li").click(function(){
+            var value = $(this).val();
+            $("#formCondition input[name=currentPage]").val(value);
+            $("#formCondition").submit();
+        })
+    })
+
+    function editWareHousePackage(){
+        $("#edit").ajaxSubmit(function(msg){
+            alert(msg);
+            $("#edit input[type=reset]").trigger("click");
+            //self.location.reload();
+        });
+        return false;
+    }
+
+</script>
+
+<style>
+    .form-group{
+        display: inline;
+        float: left;
+        margin-left:15px;
+    }
+    .form-group label{
+        display: inline;
+    }
+
+    .form-group input{
+        width: 200px;
+    }
+    table tr , table th{
+        align:center;
+        verticle-align: center;
+    }
+
+    .pagination li{
+        width:40px;
+        color: #2b669a;
+        background-color: white;
+        cursor: pointer;
+        border:1px solid #2b669a;
+        text-align: center;
+        vertical-align: center;
+        border-radius: 3px;
+        margin-right:10px;
+        font-size: 14px;
+        padding:5px;
+    }
+</style>
+
+<body>
+
+<div class="container" >
+    <div id="wrapper">
+        <div
+                id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>更新包裹</h3>
+            </div>
+            <div class="form" style="width: 43%; margin-left: 1%;margin-right: 2%; float: left;">
+                <form name="edit" id="edit" action="/taskManager/editWareHousePackage" onsubmit="return editWareHousePackage();" th:object="${pack}"
+                      method="post">
+                    <br>
+                    <h4 style="padding-bottom: 0px">
+                        Package UID:
+                        <span th:text="${pack.id}"></span></h4>
+                    <br>
+                    <h4 style="padding-bottom: 0px">Product Name:</h4>
+                    <textarea id="productName" name="productName"
+                              style="border: none; background-color: transparent; resize: none;"
+                              rows="4" cols="58" th:field="*{productName}"  readonly></textarea>
+                    <br> <br>
+                    <h4 style="padding-bottom: 0px">Shipping Address:</h4>
+                    <input
+                            style="width: 100%; border: none; background-color: transparent;"
+                            type="text" id="shippingAddress" name="shippingAddress"
+                            th:field="*{shippingAddress}" readonly="readonly" /> <br>
+                    <br>
+                    <h4 style="padding-bottom: 0px">Total Quantity:</h4>
+                    <input style="width: 100%;" type="number" id="quantity"
+                           name="quantity"  th:field="*{quantity}"
+                           onchange="quantityChange()" /> <br> <br>
+                    <h4 style="padding-bottom: 0px">CreditCard Information:</h4>
+                    <textarea id="creditcard" name="creditcard" style="resize: none;"
+                              rows="8" cols="58" th:field="*{creditCardNumber}"></textarea>
+                    <br> <input style="width: 200px" type="hidden"
+                                id="trackingnumber" name="trackingnumber"
+                                th:filed="*{trackingNumber}" readonly="readonly" />
+                    <input
+                        style="width: 200px" type="hidden" id="packageId" name="packageId"
+                        th:field="*{id}" readonly="readonly" />
+                    <input
+                        style="width: 200px" type="hidden" id="totalQuantity"
+                        name="totalQuantity" value="" readonly="readonly" />
+                    <input
+                        style="width: 200px" type="hidden" id="basePrice" name="basePrice"
+                        th:field="*{basePrice}" readonly="readonly" />
+                    <input
+                        style="width: 200px" type="hidden" id="promPrice" name="promPrice"
+                        th:field="*{promPrice}" readonly="readonly" />
+                    <input
+                        style="width: 200px" type="hidden" id="promQuantity"
+                        name="promQuantity" th:field="*{promQuantity}"
+                        readonly="readonly" />
+
+
+                    <div style="text-align: center;">
+                        <input type="reset" name="reset" style="display: none;" />
+                        <input type="submit" id="InStock" name="InStock" value="submit"/>
+                    </div>
+                </form>
+            </div>
+            <div id=trackingTableDiv
+                 style="width: 53%; font-size: 14px; float: left; line-height: 20px; margin-top: 40px;">
+                <table id="trackingTable">
+                    <tr>
+                        <th><h4 style="padding-bottom: 0px">Row</h4></th>
+                        <th><h4 style="padding-bottom: 0px">Tracking Number</h4></th>
+                        <th><h4 style="padding-bottom: 0px">Quantity</h4></th>
+                    </tr>
+
+                    <tr>
+                        <TD>1</TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="text" name="Tracking1" id="Tracking1"
+                                placeholder="Tracing Number 1" /></TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="number" name="Quantity1" id="Quantity1"
+                                placeholder="Quantity 1" /></TD>
+                    </tr>
+
+                    <tr>
+                        <TD>1</TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="text" name="Tracking2" id="Tracking2"
+                                placeholder="Tracing Number 2" /></TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="number" name="Quantity2" id="Quantity2"
+                                placeholder="Quantity 2" /></TD>
+                    </tr>
+
+
+                    <tr>
+                        <TD>1</TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="text" name="Tracking3" id="Tracking3"
+                                placeholder="Tracing Number 3" /></TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="number" name="Quantity3" id="Quantity3"
+                                placeholder="Quantity 3" /></TD>
+                    </tr>
+
+
+                    <tr>
+                        <TD>1</TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="text" name="Tracking4" id="Tracking4"
+                                placeholder="Tracing Number 4" /></TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="number" name="Quantity4" id="Quantity4"
+                                placeholder="Quantity 4" /></TD>
+                    </tr>
+
+                    <tr>
+                        <TD>1</TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="text" name="Tracking5" id="Tracking5"
+                                placeholder="Tracing Number 5" /></TD>
+                        <TD><INPUT
+                                style="width: 97%; vertical-align: middle; height: 30px; margin-bottom: 0px; margin-top: 0px; font-size: 12px;"
+                                type="number" name="Quantity5" id="Quantity5"
+                                placeholder="Quantity 5" /></TD>
+                    </tr>
+
+                </table>
+                <div style="text-align: center;">
+                    <input style="width: 200px" type="button" id="addRows"
+                           name="moreRow" value="More Rows" onClick="addRow()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+    function addRow() {
+        for (var i = 0; i < 5; i++) {
+            var table = document.getElementById("trackingTable");
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML = rowCount;
+            var cell2 = row.insertCell(1);
+            var element1 = document.createElement("input");
+            element1.type = "text";
+            element1.name = "Tracking" + rowCount;
+            element1.id = "Tracking" + rowCount;
+            element1.placeholder = "Tracing Number " + rowCount;
+            element1.style = "width: 97%; vertical-align:middle; height:30px; margin-bottom: 0px; margin-top: 0px;font-size: 12px;";
+            cell2.appendChild(element1);
+            var cell3 = row.insertCell(2);
+            var element2 = document.createElement("input");
+            element2.type = "number";
+            element2.name = "Quantity" + rowCount;
+            element2.id = "Quantity" + rowCount;
+            element2.placeholder = "Quantity " + rowCount;
+            element2.style = "width: 95%; vertical-align:middle; height:30px; margin-bottom: 0px; margin-top: 0px;font-size: 12px;";
+            cell3.appendChild(element2);
+        }
+    }
+    function deleteRow() {
+        try {
+            var table = document.getElementById("trackingTable");
+            var rowCount = table.rows.length;
+
+            for (var i = 0; i < rowCount; i++) {
+                var row = table.rows[i];
+                var chkbox = row.cells[0].childNodes[0];
+                if (null != chkbox && true == chkbox.checked) {
+                    table.deleteRow(i);
+                    rowCount--;
+                    i--;
+                }
+
+            }
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+</script>

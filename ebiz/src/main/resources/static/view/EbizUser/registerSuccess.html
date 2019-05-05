@@ -1,0 +1,32 @@
+<!DOCTYPE >
+<html lang="zh">
+<HEAD>
+    <TITLE> 用户注册 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</HEAD>
+<BODY>
+<div class="container mt-3">
+    <label id="info" class="text-success"></label>
+</div>
+</BODY>
+<script>
+    $(document).ready(function () {
+        initPage();
+    });
+
+    function initPage() {
+        var info = getQueryParam("info");
+        $("#info").text(info)
+    }
+</script>
+</HTML>

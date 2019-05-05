@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ebiz.dao.WarehouseOrderListMapper" >
+  <resultMap id="BaseResultMap" type="com.ebiz.model.WarehouseOrderList" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="CompanyName" property="companyName" jdbcType="VARCHAR" />
+    <result column="OrderNumber" property="orderNumber" jdbcType="VARCHAR" />
+    <result column="Model" property="model" jdbcType="VARCHAR" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="ProductCondition" property="productCondition" jdbcType="VARCHAR" />
+    <result column="UPC" property="UPC" jdbcType="VARCHAR" />
+    <result column="ASIN" property="ASIN" jdbcType="VARCHAR" />
+    <result column="SKU" property="SKU" jdbcType="VARCHAR" />
+    <result column="Brand" property="brand" jdbcType="VARCHAR" />
+    <result column="Price" property="price" jdbcType="DOUBLE" />
+    <result column="Quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="Shipped" property="shipped" jdbcType="INTEGER" />
+    <result column="StoreName" property="storeName" jdbcType="VARCHAR" />
+    <result column="UserName" property="userName" jdbcType="VARCHAR" />
+    <result column="ReceiverName" property="receiverName" jdbcType="VARCHAR" />
+    <result column="ShippingAddress" property="shippingAddress" jdbcType="VARCHAR" />
+    <result column="Email" property="email" jdbcType="VARCHAR" />
+    <result column="PhoneNumber" property="phoneNumber" jdbcType="VARCHAR" />
+    <result column="CreatedTime" property="createdTime" jdbcType="VARCHAR" />
+    <result column="UpdateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+    <result column="Packages" property="packages" jdbcType="INTEGER" />
+    <result column="WareHouse" property="wareHouse" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, CompanyName, OrderNumber, Model, Name, ProductCondition, UPC, ASIN, SKU, Brand, 
+    Price, Quantity, Shipped, StoreName, UserName, ReceiverName, ShippingAddress, Email, 
+    PhoneNumber, CreatedTime, UpdateTime, Note, Packages, WareHouse, Status
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ebiz.model.WarehouseOrderListExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from warehouseorderlist
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from warehouseorderlist
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from warehouseorderlist
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ebiz.model.WarehouseOrderListExample" >
+    delete from warehouseorderlist
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ebiz.model.WarehouseOrderList" >
+    insert into warehouseorderlist (id, CompanyName, OrderNumber, 
+      Model, Name, ProductCondition, 
+      UPC, ASIN, SKU, Brand, 
+      Price, Quantity, Shipped, 
+      StoreName, UserName, ReceiverName, 
+      ShippingAddress, Email, PhoneNumber, 
+      CreatedTime, UpdateTime, Note, 
+      Packages, WareHouse, Status
+      )
+    values (#{id,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{orderNumber,jdbcType=VARCHAR}, 
+      #{model,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{productCondition,jdbcType=VARCHAR}, 
+      #{UPC,jdbcType=VARCHAR}, #{ASIN,jdbcType=VARCHAR}, #{SKU,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, 
+      #{price,jdbcType=DOUBLE}, #{quantity,jdbcType=INTEGER}, #{shipped,jdbcType=INTEGER}, 
+      #{storeName,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{receiverName,jdbcType=VARCHAR}, 
+      #{shippingAddress,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, 
+      #{createdTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{packages,jdbcType=INTEGER}, #{wareHouse,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ebiz.model.WarehouseOrderList" >
+    insert into warehouseorderlist
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyName != null" >
+        CompanyName,
+      </if>
+      <if test="orderNumber != null" >
+        OrderNumber,
+      </if>
+      <if test="model != null" >
+        Model,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="productCondition != null" >
+        ProductCondition,
+      </if>
+      <if test="UPC != null" >
+        UPC,
+      </if>
+      <if test="ASIN != null" >
+        ASIN,
+      </if>
+      <if test="SKU != null" >
+        SKU,
+      </if>
+      <if test="brand != null" >
+        Brand,
+      </if>
+      <if test="price != null" >
+        Price,
+      </if>
+      <if test="quantity != null" >
+        Quantity,
+      </if>
+      <if test="shipped != null" >
+        Shipped,
+      </if>
+      <if test="storeName != null" >
+        StoreName,
+      </if>
+      <if test="userName != null" >
+        UserName,
+      </if>
+      <if test="receiverName != null" >
+        ReceiverName,
+      </if>
+      <if test="shippingAddress != null" >
+        ShippingAddress,
+      </if>
+      <if test="email != null" >
+        Email,
+      </if>
+      <if test="phoneNumber != null" >
+        PhoneNumber,
+      </if>
+      <if test="createdTime != null" >
+        CreatedTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+      <if test="note != null" >
+        Note,
+      </if>
+      <if test="packages != null" >
+        Packages,
+      </if>
+      <if test="wareHouse != null" >
+        WareHouse,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null" >
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="productCondition != null" >
+        #{productCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="UPC != null" >
+        #{UPC,jdbcType=VARCHAR},
+      </if>
+      <if test="ASIN != null" >
+        #{ASIN,jdbcType=VARCHAR},
+      </if>
+      <if test="SKU != null" >
+        #{SKU,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="shipped != null" >
+        #{shipped,jdbcType=INTEGER},
+      </if>
+      <if test="storeName != null" >
+        #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverName != null" >
+        #{receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="shippingAddress != null" >
+        #{shippingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="packages != null" >
+        #{packages,jdbcType=INTEGER},
+      </if>
+      <if test="wareHouse != null" >
+        #{wareHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ebiz.model.WarehouseOrderListExample" resultType="java.lang.Integer" >
+    select count(*) from warehouseorderlist
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update warehouseorderlist
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.companyName != null" >
+        CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderNumber != null" >
+        OrderNumber = #{record.orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.model != null" >
+        Model = #{record.model,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        Name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productCondition != null" >
+        ProductCondition = #{record.productCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.UPC != null" >
+        UPC = #{record.UPC,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ASIN != null" >
+        ASIN = #{record.ASIN,jdbcType=VARCHAR},
+      </if>
+      <if test="record.SKU != null" >
+        SKU = #{record.SKU,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brand != null" >
+        Brand = #{record.brand,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        Price = #{record.price,jdbcType=DOUBLE},
+      </if>
+      <if test="record.quantity != null" >
+        Quantity = #{record.quantity,jdbcType=INTEGER},
+      </if>
+      <if test="record.shipped != null" >
+        Shipped = #{record.shipped,jdbcType=INTEGER},
+      </if>
+      <if test="record.storeName != null" >
+        StoreName = #{record.storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null" >
+        UserName = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiverName != null" >
+        ReceiverName = #{record.receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shippingAddress != null" >
+        ShippingAddress = #{record.shippingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null" >
+        Email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phoneNumber != null" >
+        PhoneNumber = #{record.phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdTime != null" >
+        CreatedTime = #{record.createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        Note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.packages != null" >
+        Packages = #{record.packages,jdbcType=INTEGER},
+      </if>
+      <if test="record.wareHouse != null" >
+        WareHouse = #{record.wareHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update warehouseorderlist
+    set id = #{record.id,jdbcType=INTEGER},
+      CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      OrderNumber = #{record.orderNumber,jdbcType=VARCHAR},
+      Model = #{record.model,jdbcType=VARCHAR},
+      Name = #{record.name,jdbcType=VARCHAR},
+      ProductCondition = #{record.productCondition,jdbcType=VARCHAR},
+      UPC = #{record.UPC,jdbcType=VARCHAR},
+      ASIN = #{record.ASIN,jdbcType=VARCHAR},
+      SKU = #{record.SKU,jdbcType=VARCHAR},
+      Brand = #{record.brand,jdbcType=VARCHAR},
+      Price = #{record.price,jdbcType=DOUBLE},
+      Quantity = #{record.quantity,jdbcType=INTEGER},
+      Shipped = #{record.shipped,jdbcType=INTEGER},
+      StoreName = #{record.storeName,jdbcType=VARCHAR},
+      UserName = #{record.userName,jdbcType=VARCHAR},
+      ReceiverName = #{record.receiverName,jdbcType=VARCHAR},
+      ShippingAddress = #{record.shippingAddress,jdbcType=VARCHAR},
+      Email = #{record.email,jdbcType=VARCHAR},
+      PhoneNumber = #{record.phoneNumber,jdbcType=VARCHAR},
+      CreatedTime = #{record.createdTime,jdbcType=VARCHAR},
+      UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      Note = #{record.note,jdbcType=VARCHAR},
+      Packages = #{record.packages,jdbcType=INTEGER},
+      WareHouse = #{record.wareHouse,jdbcType=VARCHAR},
+      Status = #{record.status,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ebiz.model.WarehouseOrderList" >
+    update warehouseorderlist
+    <set >
+      <if test="companyName != null" >
+        CompanyName = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null" >
+        OrderNumber = #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        Model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="productCondition != null" >
+        ProductCondition = #{productCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="UPC != null" >
+        UPC = #{UPC,jdbcType=VARCHAR},
+      </if>
+      <if test="ASIN != null" >
+        ASIN = #{ASIN,jdbcType=VARCHAR},
+      </if>
+      <if test="SKU != null" >
+        SKU = #{SKU,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        Brand = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        Price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="quantity != null" >
+        Quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="shipped != null" >
+        Shipped = #{shipped,jdbcType=INTEGER},
+      </if>
+      <if test="storeName != null" >
+        StoreName = #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        UserName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverName != null" >
+        ReceiverName = #{receiverName,jdbcType=VARCHAR},
+      </if>
+      <if test="shippingAddress != null" >
+        ShippingAddress = #{shippingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        Email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        PhoneNumber = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CreatedTime = #{createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="packages != null" >
+        Packages = #{packages,jdbcType=INTEGER},
+      </if>
+      <if test="wareHouse != null" >
+        WareHouse = #{wareHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ebiz.model.WarehouseOrderList" >
+    update warehouseorderlist
+    set CompanyName = #{companyName,jdbcType=VARCHAR},
+      OrderNumber = #{orderNumber,jdbcType=VARCHAR},
+      Model = #{model,jdbcType=VARCHAR},
+      Name = #{name,jdbcType=VARCHAR},
+      ProductCondition = #{productCondition,jdbcType=VARCHAR},
+      UPC = #{UPC,jdbcType=VARCHAR},
+      ASIN = #{ASIN,jdbcType=VARCHAR},
+      SKU = #{SKU,jdbcType=VARCHAR},
+      Brand = #{brand,jdbcType=VARCHAR},
+      Price = #{price,jdbcType=DOUBLE},
+      Quantity = #{quantity,jdbcType=INTEGER},
+      Shipped = #{shipped,jdbcType=INTEGER},
+      StoreName = #{storeName,jdbcType=VARCHAR},
+      UserName = #{userName,jdbcType=VARCHAR},
+      ReceiverName = #{receiverName,jdbcType=VARCHAR},
+      ShippingAddress = #{shippingAddress,jdbcType=VARCHAR},
+      Email = #{email,jdbcType=VARCHAR},
+      PhoneNumber = #{phoneNumber,jdbcType=VARCHAR},
+      CreatedTime = #{createdTime,jdbcType=VARCHAR},
+      UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      Note = #{note,jdbcType=VARCHAR},
+      Packages = #{packages,jdbcType=INTEGER},
+      WareHouse = #{wareHouse,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

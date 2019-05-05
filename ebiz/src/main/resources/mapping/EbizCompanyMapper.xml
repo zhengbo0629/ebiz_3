@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ebiz.dao.EbizCompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.ebiz.model.EbizCompany" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="CompanyName" property="companyName" jdbcType="VARCHAR" />
+    <result column="OwnerName" property="ownerName" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="VARCHAR" />
+    <result column="Permision" property="permision" jdbcType="VARCHAR" />
+    <result column="Balance" property="balance" jdbcType="DOUBLE" />
+    <result column="CreateTime" property="createTime" jdbcType="VARCHAR" />
+    <result column="UpdateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+    <result column="PayPeriod" property="payPeriod" jdbcType="VARCHAR" />
+    <result column="PayTime" property="payTime" jdbcType="VARCHAR" />
+    <result column="Email" property="email" jdbcType="VARCHAR" />
+    <result column="EmailPassword" property="emailPassword" jdbcType="VARCHAR" />
+    <result column="PhoneNumber" property="phoneNumber" jdbcType="VARCHAR" />
+    <result column="UserManual" property="userManual" jdbcType="VARCHAR" />
+    <result column="AddressName1" property="addressName1" jdbcType="VARCHAR" />
+    <result column="AddressDetail1" property="addressDetail1" jdbcType="VARCHAR" />
+    <result column="AddressName2" property="addressName2" jdbcType="VARCHAR" />
+    <result column="AddressDetail2" property="addressDetail2" jdbcType="VARCHAR" />
+    <result column="AddressName3" property="addressName3" jdbcType="VARCHAR" />
+    <result column="AddressDetail3" property="addressDetail3" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, CompanyName, OwnerName, Status, Permision, Balance, CreateTime, UpdateTime, Note, 
+    PayPeriod, PayTime, Email, EmailPassword, PhoneNumber, UserManual, AddressName1, 
+    AddressDetail1, AddressName2, AddressDetail2, AddressName3, AddressDetail3
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ebiz.model.EbizCompanyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ebizcompany
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ebizcompany
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ebizcompany
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ebiz.model.EbizCompanyExample" >
+    delete from ebizcompany
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ebiz.model.EbizCompany" >
+    insert into ebizcompany (id, CompanyName, OwnerName, 
+      Status, Permision, Balance, 
+      CreateTime, UpdateTime, Note, 
+      PayPeriod, PayTime, Email, 
+      EmailPassword, PhoneNumber, UserManual, 
+      AddressName1, AddressDetail1, AddressName2, 
+      AddressDetail2, AddressName3, AddressDetail3
+      )
+    values (#{id,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{permision,jdbcType=VARCHAR}, #{balance,jdbcType=DOUBLE}, 
+      #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{payPeriod,jdbcType=VARCHAR}, #{payTime,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{emailPassword,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{userManual,jdbcType=VARCHAR}, 
+      #{addressName1,jdbcType=VARCHAR}, #{addressDetail1,jdbcType=VARCHAR}, #{addressName2,jdbcType=VARCHAR}, 
+      #{addressDetail2,jdbcType=VARCHAR}, #{addressName3,jdbcType=VARCHAR}, #{addressDetail3,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ebiz.model.EbizCompany" >
+    insert into ebizcompany
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyName != null" >
+        CompanyName,
+      </if>
+      <if test="ownerName != null" >
+        OwnerName,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="permision != null" >
+        Permision,
+      </if>
+      <if test="balance != null" >
+        Balance,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+      <if test="note != null" >
+        Note,
+      </if>
+      <if test="payPeriod != null" >
+        PayPeriod,
+      </if>
+      <if test="payTime != null" >
+        PayTime,
+      </if>
+      <if test="email != null" >
+        Email,
+      </if>
+      <if test="emailPassword != null" >
+        EmailPassword,
+      </if>
+      <if test="phoneNumber != null" >
+        PhoneNumber,
+      </if>
+      <if test="userManual != null" >
+        UserManual,
+      </if>
+      <if test="addressName1 != null" >
+        AddressName1,
+      </if>
+      <if test="addressDetail1 != null" >
+        AddressDetail1,
+      </if>
+      <if test="addressName2 != null" >
+        AddressName2,
+      </if>
+      <if test="addressDetail2 != null" >
+        AddressDetail2,
+      </if>
+      <if test="addressName3 != null" >
+        AddressName3,
+      </if>
+      <if test="addressDetail3 != null" >
+        AddressDetail3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null" >
+        #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="permision != null" >
+        #{permision,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="payPeriod != null" >
+        #{payPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="payTime != null" >
+        #{payTime,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="emailPassword != null" >
+        #{emailPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userManual != null" >
+        #{userManual,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName1 != null" >
+        #{addressName1,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetail1 != null" >
+        #{addressDetail1,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName2 != null" >
+        #{addressName2,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetail2 != null" >
+        #{addressDetail2,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName3 != null" >
+        #{addressName3,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetail3 != null" >
+        #{addressDetail3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ebiz.model.EbizCompanyExample" resultType="java.lang.Integer" >
+    select count(*) from ebizcompany
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ebizcompany
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.companyName != null" >
+        CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ownerName != null" >
+        OwnerName = #{record.ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.permision != null" >
+        Permision = #{record.permision,jdbcType=VARCHAR},
+      </if>
+      <if test="record.balance != null" >
+        Balance = #{record.balance,jdbcType=DOUBLE},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        Note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payPeriod != null" >
+        PayPeriod = #{record.payPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payTime != null" >
+        PayTime = #{record.payTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null" >
+        Email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.emailPassword != null" >
+        EmailPassword = #{record.emailPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phoneNumber != null" >
+        PhoneNumber = #{record.phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userManual != null" >
+        UserManual = #{record.userManual,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressName1 != null" >
+        AddressName1 = #{record.addressName1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressDetail1 != null" >
+        AddressDetail1 = #{record.addressDetail1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressName2 != null" >
+        AddressName2 = #{record.addressName2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressDetail2 != null" >
+        AddressDetail2 = #{record.addressDetail2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressName3 != null" >
+        AddressName3 = #{record.addressName3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressDetail3 != null" >
+        AddressDetail3 = #{record.addressDetail3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ebizcompany
+    set id = #{record.id,jdbcType=INTEGER},
+      CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      OwnerName = #{record.ownerName,jdbcType=VARCHAR},
+      Status = #{record.status,jdbcType=VARCHAR},
+      Permision = #{record.permision,jdbcType=VARCHAR},
+      Balance = #{record.balance,jdbcType=DOUBLE},
+      CreateTime = #{record.createTime,jdbcType=VARCHAR},
+      UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      Note = #{record.note,jdbcType=VARCHAR},
+      PayPeriod = #{record.payPeriod,jdbcType=VARCHAR},
+      PayTime = #{record.payTime,jdbcType=VARCHAR},
+      Email = #{record.email,jdbcType=VARCHAR},
+      EmailPassword = #{record.emailPassword,jdbcType=VARCHAR},
+      PhoneNumber = #{record.phoneNumber,jdbcType=VARCHAR},
+      UserManual = #{record.userManual,jdbcType=VARCHAR},
+      AddressName1 = #{record.addressName1,jdbcType=VARCHAR},
+      AddressDetail1 = #{record.addressDetail1,jdbcType=VARCHAR},
+      AddressName2 = #{record.addressName2,jdbcType=VARCHAR},
+      AddressDetail2 = #{record.addressDetail2,jdbcType=VARCHAR},
+      AddressName3 = #{record.addressName3,jdbcType=VARCHAR},
+      AddressDetail3 = #{record.addressDetail3,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ebiz.model.EbizCompany" >
+    update ebizcompany
+    <set >
+      <if test="companyName != null" >
+        CompanyName = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null" >
+        OwnerName = #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="permision != null" >
+        Permision = #{permision,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        Balance = #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="payPeriod != null" >
+        PayPeriod = #{payPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="payTime != null" >
+        PayTime = #{payTime,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        Email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="emailPassword != null" >
+        EmailPassword = #{emailPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        PhoneNumber = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userManual != null" >
+        UserManual = #{userManual,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName1 != null" >
+        AddressName1 = #{addressName1,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetail1 != null" >
+        AddressDetail1 = #{addressDetail1,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName2 != null" >
+        AddressName2 = #{addressName2,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetail2 != null" >
+        AddressDetail2 = #{addressDetail2,jdbcType=VARCHAR},
+      </if>
+      <if test="addressName3 != null" >
+        AddressName3 = #{addressName3,jdbcType=VARCHAR},
+      </if>
+      <if test="addressDetail3 != null" >
+        AddressDetail3 = #{addressDetail3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ebiz.model.EbizCompany" >
+    update ebizcompany
+    set CompanyName = #{companyName,jdbcType=VARCHAR},
+      OwnerName = #{ownerName,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=VARCHAR},
+      Permision = #{permision,jdbcType=VARCHAR},
+      Balance = #{balance,jdbcType=DOUBLE},
+      CreateTime = #{createTime,jdbcType=VARCHAR},
+      UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      Note = #{note,jdbcType=VARCHAR},
+      PayPeriod = #{payPeriod,jdbcType=VARCHAR},
+      PayTime = #{payTime,jdbcType=VARCHAR},
+      Email = #{email,jdbcType=VARCHAR},
+      EmailPassword = #{emailPassword,jdbcType=VARCHAR},
+      PhoneNumber = #{phoneNumber,jdbcType=VARCHAR},
+      UserManual = #{userManual,jdbcType=VARCHAR},
+      AddressName1 = #{addressName1,jdbcType=VARCHAR},
+      AddressDetail1 = #{addressDetail1,jdbcType=VARCHAR},
+      AddressName2 = #{addressName2,jdbcType=VARCHAR},
+      AddressDetail2 = #{addressDetail2,jdbcType=VARCHAR},
+      AddressName3 = #{addressName3,jdbcType=VARCHAR},
+      AddressDetail3 = #{addressDetail3,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

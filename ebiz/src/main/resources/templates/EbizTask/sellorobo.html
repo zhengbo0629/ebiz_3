@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <title>求购/议价</title>
+</head>
+<body>
+    <div class="container">
+        <div id="wrapper">
+            <div id="wrapperContent">
+                <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                    <h3>求购/议价</h3>
+                </div>
+                <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+
+                    <h4 style="color: #ff8000">如还未下单请等到交易确认信息后在下单</h4>
+
+                </div>
+                <div align="left" style="padding-bottom: 1px; padding-top: 10px;">
+
+                    <h4 style="color: #1e65ea">请从商品list里面选择商品</h4>
+
+                </div>
+                <form name="sellOrOBOForm" id="sellOrOBOForm"
+                      action="/taskManager/sellOrOBO" method="post" onsubmit="return lingpiao();">
+                    <table class="tablewithoutline">
+                        <tr>
+                            <td class="alignRight" style="width: 80px">选择商品：</td>
+                            <td>
+                                <select onchange="change()" id="product" name="product" style="width: 100%">
+                                <option selected="selected" value="0">Please choose a product</option>
+                                <option th:each="row :${productLists}" th:value="${row.id+','+row.productName+','+row.model+','+row.brand}" th:text="${row.productName+','+row.model}"></option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div align="left" style="padding-bottom: 1px; padding-top: 10px;">
+                        <h4 style="color: #1e65ea">或者填写商品</h4>
+                    </div>
+                    <table class="tablewithoutline">
+                        <tr>
+                            <td class="alignRight" style="width: 80px">商品型号：</td>
+                            <td style="font-size: 16px"><input type="text"
+                                                               id="productModel" name="productModel" placeholder="Product Model"
+                                                               style="width: 150px" required onchange="resetSelect()" />&emsp;商品品牌：&emsp;<input
+                                    type="text" id="productBrand" name="productBrand"
+                                    placeholder="Product Brand" style="width: 150px" required
+                                    onchange="resetSelect()" />
+                        </tr>
+                        <tr>
+                            <td class="alignRight" style="width: 80px">商品名：</td>
+                            <td style="font-size: 16px"><textarea id="productName"
+                                                                  name="productName" style="resize: none; font-size: 15px"
+                                                                  rows="3" cols="100"
+                                                                  placeholder="Product Name,Name Length Less Than 200 Characters"
+                                                                  required onchange="resetSelect()"></textarea>
+                        </tr>
+                    </table>
+                    <div align="left" style="padding-bottom: 1px; padding-top: 10px;">
+
+                        <h4 style="color: #1e65ea">输入其它信息</h4>
+
+                    </div>
+                    <table class="tablewithoutline">
+                        <tr>
+                            <td class="alignRight" style="width: 80px">数量：</td>
+                            <td style="font-size: 16px"><input type="number"
+                                                               id="quantity" name="quantity" placeholder="Your Quantity"
+                                                               style="width: 100px" required /> 价格：<input type="number"
+                                                                                                          id="price" name="price" placeholder="Your Price"
+                                                                                                          style="width: 100px" required /> <label for="orderUnplaced">&nbsp;未下单：</label><input
+                                    id="orderUnplaced" value="orderUnplaced" type="checkbox"
+                                    name="checkbox" onclick="toggle(this)" />&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                                    for="orderPlaced">已下单：</label><input id="orderplaced"
+                                                                         value="orderPlaced" type="checkbox" name="checkbox"
+                                                                         onclick="toggle(this)" />&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                                    for="instock">现货：</label><input id="instock" value="instock"
+                                                                    type="checkbox" name="checkbox" onclick="toggle(this)" /></td>
+                        </tr>
+                        <tr>
+                            <td class="alignRight" style="width: 80px">信用卡信息：</td>
+                            <td><textarea id="CreditCardNumber" name="CreditCardNumber"
+                                          style="resize: none;"
+                                          placeholder="Credit Card Number, New Card Needs Bank Name At Least"
+                                          rows="3" cols="58"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td class="alignRight">选择地址：</td>
+                            <td>
+                                <div class='container'>
+                                    <input type="radio" id="address0" name="address1" th:value="${session.currentUser.getAddress()}" onclick="changeToHome()" checked>Home
+                                    <div th:if="${session.currentCompany.getAddressName1()} ne null">
+                                        <input type="radio" id="address1" name="address1" th:value="${session.currentCompany.getAddressName1()}" onclick="changeToAddress1()"><span th:text="${session.currentCompany.getAddressName1()}"></span>
+                                    </div>
+                                    <div th:if="${session.currentCompany.getAddressName2()} ne null">
+                                        <input type="radio" id="address2" name="address1" th:value="${session.currentCompany.getAddressName2()}" onclick="changeToAddress2()"><span th:text="${session.currentCompany.getAddressName2()}"></span>
+                                    </div>
+
+                                    <div th:if="${session.currentCompany.getAddressName3()} ne null">
+                                        <input type="radio" id="address3" name="address1" th:value="${session.currentCompany.getAddressName3()}" onclick="changeToAddress3()"><span th:text="${session.currentCompany.getAddressName3()}"></span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="alignRight">或填写地址：</td>
+                            <td><input type="text" name="address" placeholder="address" th:value="${session.currentUser.getAddress()}"
+                                       style="width: 60%" required /></td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <div style="text-align: center;">
+                        <input type="reset" name="reset" style="display: none;" />
+                        <input type="submit" id="submitbutton" name="submitbutton"
+                               value="submit"/>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+
+    function lingpiao(){
+        $("#sellOrOBOForm").ajaxSubmit(function(msg){
+            alert(msg);
+            $("#sellOrOBOForm input[type=reset]").trigger("click");
+            //self.location.reload();
+        });
+        return false;
+    }
+
+    var subed = false;
+
+    function check() {
+        if (subed == false) {
+            subed = true;
+            return subed;
+        } else {
+            return false;
+            //alert("You request is being processed, Please do not repeat");
+        }
+
+    }
+
+    function toggle(source) {
+        if(source==null) return;
+        checkboxes = document.getElementsByName("checkbox");
+        var id = source.id;
+        var checked = source.checked;
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            if (checkboxes[i].id !== id && checked) {
+                checkboxes[i].checked = false;
+            }
+
+        }
+    }
+
+    function changeToHome() {
+        $("input[name=address]").val($("#address0").val())
+    }
+
+    function changeToAddress1() {
+        $("input[name=address]").val($("#address1").val())
+    }
+
+    function changeToAddress2() {
+        $("input[name=address]").val($("#address2").val())
+    }
+
+
+    function changeToAddress3() {
+        $("input[name=address]").val($("#address3").val())
+    }
+
+
+</script>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <title>正在收购</title>
+</head>
+<body>
+    <div class="container">
+        <div id="wrapper">
+            <div id="wrapperContent">
+                <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                    <h3>正在收购(Live Deal)</h3>
+                </div>
+                <div style="width: 100%; overflow: auto;">
+                    <table>
+                        <col width=5%>
+                        <col width=13%>
+                        <col width=40%>
+                        <col width=8%>
+                        <col width=8%>
+                        <col width=8%>
+                        <tr>
+                            <th>UID</th>
+                            <th>产品型号<br>Model
+                            </th>
+                            <th>产品名称<br>ProductName
+                            </th>
+                            <th>收购价格<br>Buy Price
+                            </th>
+                            <th>领票<br>Get Tickets
+                            </th>
+                            <th>查看网页<br>Check
+                            </th>
+                        </tr>
+                        <tr th:each="row : ${listmap}">
+                            <td th:text="${row.id}"></td>
+                            <td th:text="${row.model}"></td>
+                            <td ><a th:href="${row.URI}" th:text="${row.productName}"></a></td>
+                            <td th:text="${row.price}"></td>
+                            <td><button class="btn btn-default"  onClick="reportPackage();">领票</button></td>
+                            <td><button class="btn btn-default" th:value="${row.URI}" onClick="viewNew(this);">查看网页</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+<script>
+    function reportPackage(obj) {
+        window.open("/taskManager/readAllActiveAndAliveDealProductsToReportPackage?currentPage=1&pageSize=10" , "_shelf")
+    }
+
+    function viewNew(obj) {
+        var zhi = obj.value;
+        window.open(zhi)
+    }
+</script>
+
+
+</html>

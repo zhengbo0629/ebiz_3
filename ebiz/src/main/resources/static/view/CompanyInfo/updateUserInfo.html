@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>主账户管理</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+<h2>更新用户信息</h2>
+
+<div class="container-fluid">
+    <form action="/company/user" id="submitForm" method="post">
+        <input name="_method" type="hidden" value="PUT">
+        <div class="row">
+            <div class="col-sm-4">
+                <h5>基本信息</h5>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="id">用户ID:</label>
+                    <input class="form-control" id="id" name="id" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="user-id-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="userName">登录名:</label>
+                    <input class="form-control" id="userName" name="userName" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="user-name-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="userType">用户类型:</label>
+                    <input class="form-control" id="userType" name="userType" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="user-type-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="lastName">姓:</label>
+                    <input class="form-control" id="lastName" name="lastName" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="last-name-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="firstName">名:</label>
+                    <input class="form-control" id="firstName" name="firstName" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="first-name-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="contactPhone">手机号码:</label>
+                    <input class="form-control" id="contactPhone" name="phone" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="phone-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="contactEmail" id="email">公司邮箱:</label>
+                    <input class="form-control" id="contactEmail" name="email" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="email-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" data-toggle="tooltip" for="companyAddress"
+                           id="address">地址:</label>
+                    <input class="form-control" id="companyAddress" name="address" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="address-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" data-toggle="tooltip" for="companyName">公司名称:</label>
+                    <input class="form-control" id="companyName" name="companyName" readonly type="text"/>
+                    <label class="flex-1 warn-tip" id="company-name-label"></label>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
+                <h5>修改信息</h5>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="introducer">介绍人:</label>
+                    <input class="form-control" id="introducer" name="introducer" type="text"/>
+                    <label class="flex-1 warn-tip" id="introducer-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="password">密码:</label>
+                    <input class="form-control" id="password" name="password" type="text"/>
+                    <label class="flex-1 warn-tip" id="password-label"></label>
+                </div>
+                <div class="form-group  form-inline">
+                    <label class="col-sm-3 control-label" for="newUserType">用户类型:</label>
+                    <select class="form-control" id="newUserType" name="newUserType">
+
+                    </select>
+                </div>
+                <div class="form-group  form-inline">
+                    <label class="col-sm-3 control-label" for="status">用户状态:</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="Active">激活</option>
+                        <option value="UnActive">未激活</option>
+                    </select>
+                    <label class="flex-1 warn-tip" id="status-label"></label>
+                </div>
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" data-toggle="tooltip" for="balance">余额:</label>
+                    <input class="form-control" id="balance" name="balance" type="text"/>
+                    <label class="flex-1 warn-tip" id="balance-label"></label>
+                </div>
+
+                <div class="form-group form-inline">
+                    <label class="col-sm-3 control-label" for="personalLimit">个人报单限制:</label>
+                    <input class="form-control" id="personalLimit" max="100" min="0" name="personalLimit"
+                           type="number"/>
+                    <label class="flex-1 warn-tip" id="personalLimit-label"></label>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <h5>设置公司营业范围</h5>
+                <div class="form-group" id="allPermission">
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group form-inline">
+            <label class=" control-label" for="userNote">userNote:</label>
+            <input class="form-control flex-1 mx-3" id="userNote" name="userNote" type="text"/>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-warning  btn-block col-sm-3 m-auto" onclick="submitForm()" type="submit">修改</button>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    var id;
+    $(document).ready(function () {
+        initPage();
+    });
+
+    function initPage() {
+        id = getQueryParam("id");
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/company/user-info/" + id,
+            data: {},
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    pushData(res.data);
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function submitForm() {
+        var layerIndex = 0;
+        $("#submitForm").ajaxForm({
+            beforeSubmit: function () {
+                layerIndex = layer.load(1);
+            },
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    initPage();
+                    swalSuccess("更新成功");
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError();
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function pushData(data) {
+        console.log(data)
+        $("#id").val(data.user.id);
+        $("#userName").val(data.user.userName);
+        $("#userType").val(data.user.userType);
+        $("#firstName").val(data.user.firstName);
+        $("#lastName").val(data.user.lastName);
+        $("#phoneNUmber").val(data.user.phone);
+        $("#email").val(data.user.email);
+        $("#address").val(data.user.address);
+        $("#companyName").val(data.user.companyName);
+
+        $("#introducer").val(data.user.introducer);
+        $("#balance").val(data.user.balance);
+        $("#personalLimit").val(data.user.personalLimit);
+        $("#status").val(data.user.status);
+        $("#userNote").val(data.user.note);
+
+        $("#newUserType").empty();
+        for (var i = 0; i < data.userTypes.length; i++) {
+            $("#newUserType").append("<option>" + data.userTypes[i] + "</option>");
+        }
+        $("#newUserType").val(data.user.userType);
+
+        $('#allPermission').html(userMenuFormater(data.userMenus, data.userPermissions));
+    }
+
+    function userMenuFormater(all, have) {
+        var html = "";
+        for (var i = 0; i < all.length; i++) {
+            if (all[i].menuItems.length > 0) {
+                html +=
+                    '  <div class="custom-control custom-checkbox mb-3">' +
+                    '          <input type="checkbox" class="custom-control-input" ' +
+                    'value="' + all[i].name + '" name="permission" id="permission' + i + '" checked>' +
+                    '            <label class="custom-control-label" for="permission' + i + '">' + all[i].chinese + '</label>' +
+                    '</div>';
+                for (var j = 0; j < all[i].menuItems.length; j++) {
+                    var checked = "";
+                    for (var k = 0; k < have.length; k++) {
+                        if (have[k].indexOf(all[i].menuItems[j].name) >= 0) {
+                            checked = "checked";
+                            break;
+                        }
+                    }
+                    html = html +
+                        '  <div class="custom-control custom-checkbox mb-3 ml-3">' +
+                        '          <input type="checkbox" class="custom-control-input" ' +
+                        'value="' + all[i].menuItems[j].name + '" name="permission" id="permission' + i + j + '" ' + checked + '>' +
+                        '            <label class="custom-control-label" for="permission' + i + j + '">' + all[i].menuItems[j].chinese + '</label>' +
+                        '</div>'
+                }
+            }
+        }
+        return html;
+    }
+</script>
+</html>

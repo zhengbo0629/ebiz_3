@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>包裹管理</title>
+
+    <!-- 引入bootstrap样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    <!-- 引入中文语言包 -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+</head>
+
+<script type="text/javascript">
+    function customSearch (){
+        $("form").submit();
+    }
+
+    $(function(){
+        $(".pagination li").click(function(){
+            var value = $(this).val();
+            $("#formCondition input[name=currentPage]").val(value);
+            $("#formCondition").submit();
+        })
+    })
+
+
+
+</script>
+
+<style>
+    .form-group{
+        display: inline;
+        float: left;
+        margin-left:15px;
+    }
+    .form-group label{
+        display: inline;
+    }
+
+    .form-group input{
+        width: 200px;
+    }
+    table tr , table th{
+        align:center;
+        verticle-align: center;
+    }
+
+    .pagination li{
+        width:40px;
+        color: #2b669a;
+        background-color: white;
+        cursor: pointer;
+        border:1px solid #2b669a;
+        text-align: center;
+        vertical-align: center;
+        border-radius: 3px;
+        margin-right:10px;
+        font-size: 14px;
+        padding:5px;
+    }
+</style>
+
+<script>
+    function editPackage() {
+        $("#editPackForm").ajaxSubmit(function(msg){
+            alert(msg);
+            $("#editPackForm input[type=reset]").trigger("click");
+            //self.location.reload();
+        });
+        return false;
+    }
+
+</script>
+
+<body>
+
+
+<div class="container">
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>修改包裹信息</h3>
+                <br>
+            </div>
+            <br>
+            <h4 style="padding-bottom: 0px">
+                Package UID:
+                <span th:text="${packageList.id}"></span></h4>
+            <br>
+
+            <form name="editPackForm" id="editPackForm"
+                  action="/companyManager/editPackByDocotor" method="post" th:object="${packageList}" onsubmit="return editPackage();">
+                <table class="tablewithoutline">
+                    <tr>
+                        <td class="alignRight" style="width: 80px">型号：</td>
+                        <td style="font-size: 16px"><input type="text"
+                                                           id="productModel" name="productModel"
+                                                           th:field="*{modelNumber}" placeholder="Product Model"
+                                                           style="width: 120px" required />&emsp;品牌:<input
+                                type="text" id="productBrand" name="productBrand"
+                                th:field="*{brand}" placeholder="Product Brand"
+                                style="width: 100px" required />&emsp;邮寄状态:<select id="packageStatus" name="packageStatus"
+                                                                                   style="width: 20%;height:30px">
+                            <option selected="selected" value="0">Choose a
+                                ship status</option>
+                            <option th:each="row : ${EbizPackageStatusEnums}" th:value="${row.columnName}" th:text="${row.columnName}"></option>
+                        </select>&emsp;支付状态:<select id="payStatus" name="payStatus"
+                                                    style="width: 25%;height:30px">
+                            <option selected="selected" value="0">Choose a pay
+                                status</option>
+
+                            <option th:each="row : ${ebizPackagePayStatusEnums}" th:value="${row.name}" th:text="${row.name}"></option>
+                        </select>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">商品名：</td>
+                        <td style="font-size: 16px"><textarea id="productName"
+                                                              name="productName" style="resize: none; font-size: 15px"
+                                                              rows="3" cols="150"
+                                                              placeholder="Product Name,Name Length Less Than 200 Characters" th:field="*{productName}" ></textarea></td>
+                    </tr>
+                </table>
+                <table class="tablewithoutline">
+                    <tr>
+                        <td class="alignRight" style="width: 80px">数量：</td>
+                        <td style="font-size: 16px"><input type="number"
+                                                           id="quantity" name="quantity" placeholder="Your Quantity"
+                                                           th:field="*{quantity}" style="width: 100px" required />&emsp; 价格：<input
+                                type="number" id="price" name="price" th:field="*{price}"
+                                placeholder="Your Price" style="width: 100px" required />
+                            &emsp;SKU:&nbsp;<input
+                                    style="width: 120px; height:25px "
+                                    type="text" id="productSKU" name="productSKU"
+                                    th:field="*{SKU}"/>&emsp;UPC:&nbsp;<input
+                                    style="width: 120px; height:25px  "
+                                    type="text" id="productUPC" name="productUPC"
+                                    th:field="*{UPC}"/>&emsp;ASIN:&nbsp;<input
+                                    style="width: 120px; height:25px "
+                                    type="text" id="productASIN" name="productASIN"
+                                    th:field="*{ASIN}"/><br>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">信用卡信息：</td>
+                        <td><textarea id="CreditCardNumber" name="CreditCardNumber"
+                                      style="resize: none;" rows="3" cols="58"
+                                      placeholder="Credit Card Number, New Card Needs Bank Name At Least" th:field="*{creditCardNumber}"></textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight">选择地址：</td>
+                        <td>
+                            <div class='container'>
+                                <input type="radio" name="address" value="Home"
+                                       id="homeButton" checked><label>&nbsp; Home</label>&emsp;&emsp;
+                                <div th:if="${session.currentCompany.addressName1 ne null}">
+                                    <input type="radio" name="address" id="address1">
+                                    <label>&nbsp; <span th:text="${session.currentCompany.addressName1}"></span></label>&emsp;&emsp;
+                                </div>
+                                <div th:if="${session.currentCompany.addressName2 ne null}">
+                                    <input type="radio" name="address" id="address2">
+                                    <label>&nbsp; <span th:text="${session.currentCompany.addressName2}"></span></label>&emsp;&emsp;
+                                </div>
+
+                                <div th:if="${session.currentCompany.addressName3 ne null}">
+                                    <input type="radio" name="address" id="address3">
+                                    <label>&nbsp; <span th:text="${session.currentCompany.addressName3}"></span></label>&emsp;&emsp;
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Tracking：</td>
+                        <td><textarea id="trackingNumber" name="trackingNumber"
+                                      style="resize: none;" rows="3" cols="58"
+                                      placeholder="Tracking Number" th:field="*{trackingNumber}"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Ship ID：</td>
+                        <td><textarea id="shipID" name="shipID"
+                                      style="resize: none;" rows="3" cols="58"
+                                      placeholder="Ship ID" th:field="*{shipID}"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">Note：</td>
+                        <td><textarea id="userNote" name="userNote"
+                                      style="resize: none;" rows="3" cols="58"
+                                      placeholder="Note" th:field="*{note}"></textarea>
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+                <div style="text-align: center;">
+                    <input type="reset" name="reset" style="display: none;" />
+                    <input type="submit" id="submitbutton" name="submitbutton"
+                           value="submit" />
+                </div>
+                <input style="width: 200px" type="hidden" id="packageId"
+                       name="packageId" th:field="*{id}"
+                       readonly="readonly" />
+            </form>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

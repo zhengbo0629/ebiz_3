@@ -1,0 +1,316 @@
+<!DOCTYPE>
+<html lang="zh">
+<head>
+    <TITLE> 注册 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<style>
+    .codeImg {
+        height: 38px;
+    }
+
+    .icon-refresh {
+        margin: 5px;
+        height: 28px;
+    }
+</style>
+<body>
+<div class="container  col-9 center-block">
+    <form action="/user/register" class="form-horizontal " method="post" id="submitForm">
+        <h5>账户类型</h5>
+        <div class="form-group">
+            <label class="col-sm-2"></label>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" checked class="custom-control-input " id="customRadio1" name="accType" value="1">
+                <label class="custom-control-label" for="customRadio1" data-toggle="tooltip" data-placement="bottom"
+                       title="可以进行子账号管理，库存管理。
+                       具备发shipping label，发deal，支付，deal 等管理功能。
+                       需要填写公司英文名称来作为公司的唯一标志代码。">主账户</label>
+            </div>
+            <div class="custom-control custom-radio  custom-control-inline">
+                <input type="radio" class="custom-control-input" id="customRadio2" name="accType" value="2">
+                <label class="custom-control-label" for="customRadio2" data-toggle="tooltip" data-placement="bottom"
+                       title="子账号必须绑定一个主账号，具有报货，求款，求出货等功能。
+                        需要填写主账号公司名称来进行绑定，也可又主账号升级后，
+                        具备管理账号功能，比如发label，对支付进行记录等。">子账户</label>
+            </div>
+            <div class="custom-control custom-radio  custom-control-inline">
+                <input type="radio" class="custom-control-input" id="customRadio3" name="accType" value="3">
+                <label class="custom-control-label" for="customRadio3" data-toggle="tooltip" data-placement="bottom"
+                       title="具备仓库管理，报货等功能，不能管理子账号，可升级为主账号。">独立账号</label>
+            </div>
+        </div>
+        <h5>账户信息</h5>
+        <div class="form-group form-inline">
+            <label for="userName" class="col-sm-3 control-label" data-toggle="tooltip" data-placement="bottom"
+                   title="该登录名登陆的时候需要使用，请注意保密">登录名:</label>
+            <input class="form-control" id="userName" name="userName" placeholder="5位及以上数字或字母组合" type="text"/>
+            <label id="userNameLabel" class="flex-1 text-danger ml-2"></label>
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="password" class="col-sm-3 control-label" data-toggle="tooltip" data-placement="bottom"
+                   title="6-16位字母、数字、符号、区分大小写">密码:</label>
+            <input class="form-control" id="password" name="password" placeholder="请输入密码" type="password"/>
+            <label id="passwordLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="confirmPassword" class="col-sm-3 control-label">再输一次:</label>
+            <input class="form-control" id="confirmPassword" name="confirmPassword" placeholder="确认密码" type="password"/>
+            <label id="confirmPasswordLabel" class="flex-1 text-danger ml-2"></label>
+        </div>
+        <h5 id="info-title">公司信息</h5>
+        <div class="form-group form-inline">
+            <label for="companyName" class="col-sm-3 control-label" data-toggle="tooltip">公司名称:</label>
+            <input type="text" class="form-control" id="companyName" name="companyName"/>
+            <label id="companyNameLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="companyAddress" class="col-sm-3 control-label" data-toggle="tooltip"
+                   id="address">地址:</label>
+            <input type="text" class="form-control" id="companyAddress" name="address"/>
+            <label id="addressLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="zipcode" class="col-sm-3 control-label">邮编:</label>
+            <input type="text" class="form-control" id="zipcode" name="zipCode"/>
+            <label id="zipCodeLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+        <h5>联系信息</h5>
+        <div class="form-group form-inline">
+            <label for="lastName" class="col-sm-3 control-label" data-toggle="tooltip" data-placement="bottom"
+                   title="请输入真实姓名">姓:</label>
+            <input type="text" class="form-control" id="lastName" name="lastName"/>
+            <label id="lastNameLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label for="firstName" class="col-sm-3 control-label" data-toggle="tooltip" data-placement="bottom"
+                   title="请输入真实姓名">名:</label>
+            <input type="text" class="form-control" id="firstName" name="firstName"/>
+            <label id="firstNameLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="contactPhone" class="col-sm-3 control-label">手机号码:</label>
+            <input type="text" class="form-control" id="contactPhone" name="phone"/>
+            <label id="phoneLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="contactEmail" class="col-sm-3 control-label" id="email">公司邮箱:</label>
+            <input type="text" class="form-control" id="contactEmail" name="email"/>
+            <label id="emailLabel" class="flex-1  text-danger ml-2"></label>
+        </div>
+        <!--<div class="form-group">-->
+        <!--<div class="custom-control custom-checkbox mb-3">-->
+        <!--<input type="checkbox" class="custom-control-input" id="customCheck" name="example1">-->
+        <!--<label class="custom-control-label" for="customCheck">我已经阅读并接受<a href="">注册条款</a></label>-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="form-group form-inline">
+            <label class="col-sm-3 control-label" for="code" onclick="getCode()">
+                <img class="codeImg" id="codeImg"><img class="icon-refresh" src="/images/refresh.png"></label>
+            <input class="form-control" id="code" name="code" placeholder="请输入验证码计算结果" type="text"/>
+        </div>
+        <div class="form-group">
+
+            <label  class="col-sm-3 control-label">
+                <input type="checkBox"  onclick="agree();" id="cb"/>我同意<a href="/view/About/privacyPolicy.html" target="_blank">用户协议</a>
+            </label>
+            <button id="accept"  disabled="disabled"  type="submit" class="btn btn-warning  btn-block col-sm-6">立即注册</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    //注册协议
+    function agree(){
+        if(document.getElementById('cb').checked)
+            document.getElementById('accept').disabled=false;
+        else
+            document.getElementById('accept').disabled='disabled';
+    }
+
+
+
+    function getCode() {
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/user/register-code",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    //解析数据
+                    $("#codeImg").attr('src', "data:image/jpeg;base64," + res.data);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function checkUserName() {
+        if (checkUserNameOrCompanyName($("#userName").val())) {
+            $("#userNameLabel").text("");
+            return true;
+        } else {
+            $("#userNameLabel").text("Only number 0-9, characters A-Z, a-z and '-' are  acceptable.\n  Length should greater or equal 5 and less than 20");
+            // $("#userName").focus();
+            return false;
+        }
+    }
+
+    function checkCompanyName() {
+        if (checkUserNameOrCompanyName($("#companyName").val())) {
+            $("#companyNameLabel").text("");
+            return true;
+        } else {
+            $("#companyNameLabel").text("length should greater or equal 5 and less than 20");
+            // $("#companyName").focus();
+            return false;
+        }
+    }
+
+    function checkPassword() {
+        if ($("#password").val().length >= 7) {
+            $("#passwordLabel").text("");
+            return true;
+        } else {
+            $("#passwordLabel").text("password length should greater or equal to 7");
+            // $("#password").focus();
+            return false;
+        }
+    }
+
+    function checkConfirmPassword() {
+        if ($("#password").val() === $("#confirmPassword").val() && $("#confirmPassword").val().length >= 7) {
+            $("#confirmPasswordLabel").text("");
+            return true;
+        } else {
+            $("#confirmPasswordLabel").text("Your password and confirmPassword are not equal or length less than 7");
+            // $("#confirmPassword").focus();
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        getCode();
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('input[type=radio][name=accType]').change(function () {
+            console.log(this.value)
+            switch (this.value) {
+                //主账户
+                case "1":
+                    $("#email").text("公司邮箱:");
+                    $("#info-title").text("公司信息:");
+                    $("#address").text("公司地址:")
+                    break;
+                //子账户
+                case "2":
+                    $("#email").text("个人邮箱:");
+                    $("#info-title").text("个人信息:");
+                    $("#address").text("个人地址:")
+                    break;
+                //独立账户
+                case "3":
+                    $("#email").text("公司邮箱:");
+                    $("#info-title").text("公司信息:");
+                    $("#address").text("公司地址:")
+                    break;
+            }
+        });
+
+        $("#userName").blur(function () {
+            checkUserName();
+        });
+
+        $("#companyName").blur(function () {
+            checkCompanyName();
+        });
+        $("#password").blur(function () {
+            checkPassword();
+        })
+        $("#confirmPassword").blur(function () {
+            checkConfirmPassword();
+        })
+
+
+    });
+
+    /**
+     * 用户名校验
+     * @param userName
+     * @returns {boolean}
+     */
+    function checkUserNameOrCompanyName(userName) {
+        return !(userName.match(/^[a-zA-Z0-9]+$/) == null
+            || userName.length < 5
+            || userName.length >= 20);
+    }
+
+    function checkAll() {
+        var flag1 = checkUserName();
+        var flag2 = checkCompanyName();
+        var flag3 = checkPassword();
+        var flag4 = checkConfirmPassword();
+        return flag1 && flag2 && flag3 && flag4;
+    }
+
+
+    var layerIndex = 0;
+    $("#submitForm").ajaxForm({
+        beforeSubmit: function () {
+            if (!checkAll()) {
+                return;
+            }
+            layerIndex = layer.load(1);
+            //alert("我在提交表单之前被调用！");
+        },
+        success: function (res) {
+            console.log(res)
+            layer.close(layerIndex)
+            if (res.state === "000000") {
+                $(window).attr('location', encodeURI('/view/EbizUser/registerSuccess.html?info=' + res.data.successInfo));
+            } else if (res.state === "100003") {
+                swal({
+                    title: "提示",
+                    text: res.message,
+                    icon: "error",
+                    button: "确定"
+                });
+            } else {
+                $("#userNameLabel").text(res.data.userNameInfo);
+                $("#companyNameLabel").text(res.data.companyNameInfo);
+                $("#accTypeLabel").text(res.data.accTypeInfo);
+            }
+        }, error: function (res) {
+            layer.close(layerIndex);
+            swalSysError(res);
+        }
+    });
+
+</script>
+</body>
+</html>

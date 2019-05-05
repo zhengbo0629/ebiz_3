@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ebiz.dao.EbizUserMapper" >
+  <resultMap id="BaseResultMap" type="com.ebiz.model.EbizUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="UserName" property="userName" jdbcType="VARCHAR" />
+    <result column="FirstName" property="firstName" jdbcType="VARCHAR" />
+    <result column="LastName" property="lastName" jdbcType="VARCHAR" />
+    <result column="CompanyName" property="companyName" jdbcType="VARCHAR" />
+    <result column="PassWord" property="passWord" jdbcType="VARCHAR" />
+    <result column="TempPassWord" property="tempPassWord" jdbcType="VARCHAR" />
+    <result column="Email" property="email" jdbcType="VARCHAR" />
+    <result column="PhoneNumber" property="phoneNumber" jdbcType="VARCHAR" />
+    <result column="Address" property="address" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createTime" jdbcType="VARCHAR" />
+    <result column="UpdateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="VARCHAR" />
+    <result column="UserType" property="userType" jdbcType="VARCHAR" />
+    <result column="Permissions" property="permissions" jdbcType="VARCHAR" />
+    <result column="Balance" property="balance" jdbcType="DOUBLE" />
+    <result column="PersonalLimit" property="personalLimit" jdbcType="INTEGER" />
+    <result column="PayTimeInfor" property="payTimeInfor" jdbcType="VARCHAR" />
+    <result column="OperatingStatus" property="operatingStatus" jdbcType="VARCHAR" />
+    <result column="OperationRecord" property="operationRecord" jdbcType="VARCHAR" />
+    <result column="ActivityRecord" property="activityRecord" jdbcType="VARCHAR" />
+    <result column="Introducer" property="introducer" jdbcType="VARCHAR" />
+    <result column="Address1" property="address1" jdbcType="VARCHAR" />
+    <result column="Address2" property="address2" jdbcType="VARCHAR" />
+    <result column="LastLoginTime" property="lastLoginTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, UserName, FirstName, LastName, CompanyName, PassWord, TempPassWord, Email, PhoneNumber, 
+    Address, CreateTime, UpdateTime, Note, Status, UserType, Permissions, Balance, PersonalLimit, 
+    PayTimeInfor, OperatingStatus, OperationRecord, ActivityRecord, Introducer, Address1, 
+    Address2, LastLoginTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ebiz.model.EbizUserExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ebizuser
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="startRow != null and pageSize != null and pageSize != 0">
+      limit #{startRow},#{pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ebizuser
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ebizuser
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ebiz.model.EbizUserExample" >
+    delete from ebizuser
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ebiz.model.EbizUser" >
+    insert into ebizuser (id, UserName, FirstName, 
+      LastName, CompanyName, PassWord, 
+      TempPassWord, Email, PhoneNumber, 
+      Address, CreateTime, UpdateTime, 
+      Note, Status, UserType, 
+      Permissions, Balance, PersonalLimit, 
+      PayTimeInfor, OperatingStatus, OperationRecord, 
+      ActivityRecord, Introducer, Address1, 
+      Address2, LastLoginTime)
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, 
+      #{lastName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, 
+      #{tempPassWord,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{userType,jdbcType=VARCHAR}, 
+      #{permissions,jdbcType=VARCHAR}, #{balance,jdbcType=DOUBLE}, #{personalLimit,jdbcType=INTEGER}, 
+      #{payTimeInfor,jdbcType=VARCHAR}, #{operatingStatus,jdbcType=VARCHAR}, #{operationRecord,jdbcType=VARCHAR}, 
+      #{activityRecord,jdbcType=VARCHAR}, #{introducer,jdbcType=VARCHAR}, #{address1,jdbcType=VARCHAR}, 
+      #{address2,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ebiz.model.EbizUser" >
+    insert into ebizuser
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userName != null" >
+        UserName,
+      </if>
+      <if test="firstName != null" >
+        FirstName,
+      </if>
+      <if test="lastName != null" >
+        LastName,
+      </if>
+      <if test="companyName != null" >
+        CompanyName,
+      </if>
+      <if test="passWord != null" >
+        PassWord,
+      </if>
+      <if test="tempPassWord != null" >
+        TempPassWord,
+      </if>
+      <if test="email != null" >
+        Email,
+      </if>
+      <if test="phoneNumber != null" >
+        PhoneNumber,
+      </if>
+      <if test="address != null" >
+        Address,
+      </if>
+      <if test="createTime != null" >
+        CreateTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+      <if test="note != null" >
+        Note,
+      </if>
+      <if test="status != null" >
+        Status,
+      </if>
+      <if test="userType != null" >
+        UserType,
+      </if>
+      <if test="permissions != null" >
+        Permissions,
+      </if>
+      <if test="balance != null" >
+        Balance,
+      </if>
+      <if test="personalLimit != null" >
+        PersonalLimit,
+      </if>
+      <if test="payTimeInfor != null" >
+        PayTimeInfor,
+      </if>
+      <if test="operatingStatus != null" >
+        OperatingStatus,
+      </if>
+      <if test="operationRecord != null" >
+        OperationRecord,
+      </if>
+      <if test="activityRecord != null" >
+        ActivityRecord,
+      </if>
+      <if test="introducer != null" >
+        Introducer,
+      </if>
+      <if test="address1 != null" >
+        Address1,
+      </if>
+      <if test="address2 != null" >
+        Address2,
+      </if>
+      <if test="lastLoginTime != null" >
+        LastLoginTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null" >
+        #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastName != null" >
+        #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="passWord != null" >
+        #{passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="tempPassWord != null" >
+        #{tempPassWord,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="permissions != null" >
+        #{permissions,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="personalLimit != null" >
+        #{personalLimit,jdbcType=INTEGER},
+      </if>
+      <if test="payTimeInfor != null" >
+        #{payTimeInfor,jdbcType=VARCHAR},
+      </if>
+      <if test="operatingStatus != null" >
+        #{operatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="operationRecord != null" >
+        #{operationRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="activityRecord != null" >
+        #{activityRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="introducer != null" >
+        #{introducer,jdbcType=VARCHAR},
+      </if>
+      <if test="address1 != null" >
+        #{address1,jdbcType=VARCHAR},
+      </if>
+      <if test="address2 != null" >
+        #{address2,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        #{lastLoginTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ebiz.model.EbizUserExample" resultType="java.lang.Integer" >
+    select count(*) from ebizuser
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ebizuser
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userName != null" >
+        UserName = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.firstName != null" >
+        FirstName = #{record.firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastName != null" >
+        LastName = #{record.lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.companyName != null" >
+        CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.passWord != null" >
+        PassWord = #{record.passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tempPassWord != null" >
+        TempPassWord = #{record.tempPassWord,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null" >
+        Email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phoneNumber != null" >
+        PhoneNumber = #{record.phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        Address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CreateTime = #{record.createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        Note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        Status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userType != null" >
+        UserType = #{record.userType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.permissions != null" >
+        Permissions = #{record.permissions,jdbcType=VARCHAR},
+      </if>
+      <if test="record.balance != null" >
+        Balance = #{record.balance,jdbcType=DOUBLE},
+      </if>
+      <if test="record.personalLimit != null" >
+        PersonalLimit = #{record.personalLimit,jdbcType=INTEGER},
+      </if>
+      <if test="record.payTimeInfor != null" >
+        PayTimeInfor = #{record.payTimeInfor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operatingStatus != null" >
+        OperatingStatus = #{record.operatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operationRecord != null" >
+        OperationRecord = #{record.operationRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="record.activityRecord != null" >
+        ActivityRecord = #{record.activityRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="record.introducer != null" >
+        Introducer = #{record.introducer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address1 != null" >
+        Address1 = #{record.address1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address2 != null" >
+        Address2 = #{record.address2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastLoginTime != null" >
+        LastLoginTime = #{record.lastLoginTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ebizuser
+    set id = #{record.id,jdbcType=INTEGER},
+      UserName = #{record.userName,jdbcType=VARCHAR},
+      FirstName = #{record.firstName,jdbcType=VARCHAR},
+      LastName = #{record.lastName,jdbcType=VARCHAR},
+      CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      PassWord = #{record.passWord,jdbcType=VARCHAR},
+      TempPassWord = #{record.tempPassWord,jdbcType=VARCHAR},
+      Email = #{record.email,jdbcType=VARCHAR},
+      PhoneNumber = #{record.phoneNumber,jdbcType=VARCHAR},
+      Address = #{record.address,jdbcType=VARCHAR},
+      CreateTime = #{record.createTime,jdbcType=VARCHAR},
+      UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      Note = #{record.note,jdbcType=VARCHAR},
+      Status = #{record.status,jdbcType=VARCHAR},
+      UserType = #{record.userType,jdbcType=VARCHAR},
+      Permissions = #{record.permissions,jdbcType=VARCHAR},
+      Balance = #{record.balance,jdbcType=DOUBLE},
+      PersonalLimit = #{record.personalLimit,jdbcType=INTEGER},
+      PayTimeInfor = #{record.payTimeInfor,jdbcType=VARCHAR},
+      OperatingStatus = #{record.operatingStatus,jdbcType=VARCHAR},
+      OperationRecord = #{record.operationRecord,jdbcType=VARCHAR},
+      ActivityRecord = #{record.activityRecord,jdbcType=VARCHAR},
+      Introducer = #{record.introducer,jdbcType=VARCHAR},
+      Address1 = #{record.address1,jdbcType=VARCHAR},
+      Address2 = #{record.address2,jdbcType=VARCHAR},
+      LastLoginTime = #{record.lastLoginTime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ebiz.model.EbizUser" >
+    update ebizuser
+    <set >
+      <if test="userName != null" >
+        UserName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null" >
+        FirstName = #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastName != null" >
+        LastName = #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        CompanyName = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="passWord != null" >
+        PassWord = #{passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="tempPassWord != null" >
+        TempPassWord = #{tempPassWord,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        Email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        PhoneNumber = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CreateTime = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        UserType = #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="permissions != null" >
+        Permissions = #{permissions,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        Balance = #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="personalLimit != null" >
+        PersonalLimit = #{personalLimit,jdbcType=INTEGER},
+      </if>
+      <if test="payTimeInfor != null" >
+        PayTimeInfor = #{payTimeInfor,jdbcType=VARCHAR},
+      </if>
+      <if test="operatingStatus != null" >
+        OperatingStatus = #{operatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="operationRecord != null" >
+        OperationRecord = #{operationRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="activityRecord != null" >
+        ActivityRecord = #{activityRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="introducer != null" >
+        Introducer = #{introducer,jdbcType=VARCHAR},
+      </if>
+      <if test="address1 != null" >
+        Address1 = #{address1,jdbcType=VARCHAR},
+      </if>
+      <if test="address2 != null" >
+        Address2 = #{address2,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        LastLoginTime = #{lastLoginTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ebiz.model.EbizUser" >
+    update ebizuser
+    set UserName = #{userName,jdbcType=VARCHAR},
+      FirstName = #{firstName,jdbcType=VARCHAR},
+      LastName = #{lastName,jdbcType=VARCHAR},
+      CompanyName = #{companyName,jdbcType=VARCHAR},
+      PassWord = #{passWord,jdbcType=VARCHAR},
+      TempPassWord = #{tempPassWord,jdbcType=VARCHAR},
+      Email = #{email,jdbcType=VARCHAR},
+      PhoneNumber = #{phoneNumber,jdbcType=VARCHAR},
+      Address = #{address,jdbcType=VARCHAR},
+      CreateTime = #{createTime,jdbcType=VARCHAR},
+      UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      Note = #{note,jdbcType=VARCHAR},
+      Status = #{status,jdbcType=VARCHAR},
+      UserType = #{userType,jdbcType=VARCHAR},
+      Permissions = #{permissions,jdbcType=VARCHAR},
+      Balance = #{balance,jdbcType=DOUBLE},
+      PersonalLimit = #{personalLimit,jdbcType=INTEGER},
+      PayTimeInfor = #{payTimeInfor,jdbcType=VARCHAR},
+      OperatingStatus = #{operatingStatus,jdbcType=VARCHAR},
+      OperationRecord = #{operationRecord,jdbcType=VARCHAR},
+      ActivityRecord = #{activityRecord,jdbcType=VARCHAR},
+      Introducer = #{introducer,jdbcType=VARCHAR},
+      Address1 = #{address1,jdbcType=VARCHAR},
+      Address2 = #{address2,jdbcType=VARCHAR},
+      LastLoginTime = #{lastLoginTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,40 @@
+/* Make the image fully responsive */
+.carousel-inner img {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar-nav-end {
+    padding-right: 5rem;
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+/*分页菜单相关*/
+.split-page {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 10px 0;
+}
+
+.split-page-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 0 10px;
+}
+
+/*表格中的数据过长 自动换行*/
+#dataTable td {
+    height: auto;
+    word-wrap: break-word;
+    word-break: break-all;
+    /*overflow: hidden;*/
+}
+.flex-1{
+    flex: 1;
+}
+.fw{
+    width: 100% !important;
+}

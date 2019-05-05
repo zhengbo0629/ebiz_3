@@ -1,0 +1,313 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 领票或预报 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/getRequestParameters.js"></script>
+</HEAD>
+<BODY>
+
+<script>
+    function reportPackage() {
+        $("#reportPackageForm").ajaxSubmit(function (data) {
+            console.log(data);
+            alert(data.data.message);
+            if(data.data.state === "000000"){
+                window.open("/view/EbizPackage/list.html" ,"_self");
+            }else{
+                location.reload();
+            }
+        });
+        return false;
+    }
+
+
+    function changeToHome() {
+        $("input[name=address]").val($("#home").text())
+    }
+
+
+    function changeToAddress1() {
+        $("input[name=address]").val($("#address2").next()[0].innerText)
+    }
+
+    function changeToAddress2() {
+        $("input[name=address]").val($("#address3").next()[0].innerText)
+    }
+
+
+    function changeToAddress3() {
+        $("input[name=address]").val($("#address4").next()[0].innerText)
+    }
+</script>
+<div class="container">
+    <div id="wrapper">
+        <div id="wrapperContent">
+            <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                <h3>领票或预报</h3>
+                <br>
+            </div>
+
+            <form name="reportPackageForm" id="reportPackageForm"
+                  action="/package/reportPackage" method="post"
+                  onsubmit="return reportPackage();">
+                <table class="tablewithoutline">
+                    <tr>
+                        <td class="alignRight" style="width: 80px">选择商品：</td>
+                        <td>
+                            <select id="product" name="product" style="width: 100%" onchange="changeTickets()">
+                                <option selected="selected" value="0">Please choose a product</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">填写数量：</td>
+                        <td style="font-size: 16px"><input type="number"
+                                                           name="quantity" placeholder="Your Quantity" style="width: 150px"
+                                                           required />
+                            Limit:<input type="text" id="ticket" name="ticket" value="0" style="width: 130px" readonly="readonly" />
+                            Total left:<input type="text" id="ticketLeft" name="ticketLeft" value="0" style="width: 150px" readonly="readonly" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight" style="width: 80px">信用卡信息：</td>
+                        <td><textarea name="CreditCardNumber"
+                                      placeholder="Credit Card Number, New Card Needs Bank Name At Least"
+                                      style="resize: none;" rows="4" required /></textarea></td>
+                    </tr>
+
+                    <tr>
+                        <td class="alignRight">选择地址：</td>
+                        <td style="width:300px;">
+
+                            <div id="optionAddress" style="width:80%;margin-left:100px;" class="form-control mx-4 mt-4" >
+                                <div>
+                                    <input type="radio" name="addressCheckbox" onclick="changeToHome()" value="Home"
+                                           id="address1" checked>
+                                    <label>&nbsp; Home</label>&emsp;&emsp;
+                                </div>
+                                <div>
+                                    <input type="radio" name="addressCheckbox" onclick="changeToAddress1()" id="address2">
+                                    <label></label>&emsp;&emsp;
+                                </div>
+                                <div >
+                                    <input type="radio" name="addressCheckbox" onclick="changeToAddress2()" id="address3">
+                                    <label></label>&emsp;&emsp;
+                                </div>
+
+                                <div >
+                                    <input type="radio" name="addressCheckbox" onclick="changeToAddress3()" id="address4">
+                                    <label></label>&emsp;&emsp;
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="alignRight">或填写地址：</td>
+                        <span id="home" style="display: none;">11</span>
+                        <td><input id="address" type="text" name="address"
+                                   style="width: 60%" value="Home" required /></td>
+                    </tr>
+                </table>
+
+                <br>
+                <div style="text-align: center;">
+                    <input type="submit" id="submitbutton" name="submitbutton"
+                           value="Submit" />
+                </div>
+            </form>
+            <form method="post" action="GetReportedNumberServlet" id="ajaxForm">
+                <input type="hidden" name="Model" id="Model" /><br>
+                <input type="hidden" name="limit" id="limit"/>
+                <input
+                    type="hidden" value="submit" id="ajaxSubmit" />&nbsp;&nbsp;
+            </form>
+
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    var params ;
+    $(document).ready(function () {
+        params = getParameters();
+        //初始化页面数据
+        initPage();
+    });
+
+    function initPage() {
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/product/list?status=1",
+            data: params,
+            async: true,
+            success: function (res) {
+                console.log(res)
+                layer.close(layerIndex);
+                if (res.data.state === "000000") {
+                    //console.log(res.data);
+                    //解析数据
+                    pushData(res);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+
+        //地址
+        $.ajax({
+            type: 'GET',
+            url: "/company/getCurrentCompanyClient",
+            data: "",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.data.state === "000000") {
+                    //解析数据
+                    if(res.data.data.addressDetail1 != null && res.data.data.addressDetail1 != ""){
+                        var label1 = $("#address2").next();
+                        label1[0].innerText = res.data.data.addressDetail1;
+                    }else{
+                        $("#address2").parentElement.css("display","none");
+                    }
+
+                    if(res.data.data.addressDetail2 != null && res.data.data.addressDetail2 != ""){
+                        var label2 = $("#address3").next();
+                        label2[0].innerText = res.data.data.addressDetail2;
+                    }else{
+                        $("#address3").parent().css("display","none");
+                    }
+
+                    if(res.data.data.addressDetail3 != null && res.data.data.addressDetail3 != ""){
+                        var label3 = $("#address4").next();
+                        label3[0].innerText = res.data.data.addressDetail3;
+                    }else{
+                        $("#address4").parent().css("display","none");
+                    }
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.data.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+
+        //用户
+        $.ajax({
+            type: 'POST',
+            url: "/user/getCurrentUserClient",
+            data: "",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                console.log(res.data);
+                if (res.data.state === "000000") {
+                    //解析数据
+                    $("#home").text(res.data.data.address);
+                    $("#address").val(res.data.data.address);
+                    $("#limit").val(res.data.data.personalLimit);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.data.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    
+
+
+
+    function pushData(res) {
+        var data = res.data.data;
+        for (var i = 0; i < data.length; i++) {
+            var row = '<option value="'+ data[i].id + ','+ data[i].tickets + ',' + data[i].limitPerPerson + ',' +  data[i].model + ',' + data[i].brand+'">'+data[i].productName + ',' + data[i].model + ',' + data[i].price +  '</option>';
+            $("#product option:last").after(row);
+        }
+    }
+
+
+
+    //选中产品后发出ajax请求
+    function changeTickets() {
+        var limit = 10;
+        var myselect = document.getElementById("product");
+        var index = myselect.selectedIndex;
+        var vs = myselect.options[index].value;
+        if(vs==="0"){
+            return;
+        }else {
+            var array = vs.split(",");
+            var uid = parseInt(array[0]);
+            var tick = parseInt(array[1]);
+            var productPersonalLimit = parseInt(array[2]);
+            var model =array[3];
+            $("#Model").val(model);
+            $("#ticketLeft").val(tick);
+            if (tick > limit) {
+                $("#ticket").val(limit);
+            } else {
+                $("#ticket").val(tick);
+            }
+        }
+    }
+
+
+
+
+
+
+
+    //避免页面上出现 null
+    function emptyFormatter(data) {
+        if (!data) {
+            return ""
+        }
+        return data;
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+
+    //优化页面显示
+    function moneyFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        return data + " $";
+    }
+</script>
+</html>

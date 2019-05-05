@@ -1,0 +1,293 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 支付用户 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</HEAD>
+<BODY>
+<div class="container-fluid">
+    <h3>所有未支付包裹(All UnPaid Packages)</h3>
+    <form class="container-fluid form-inline" id="searchForm">
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" class="form-control mx-2 mt-2 mt-2" id="id" name="id">
+        </div>
+        <div class="form-group">
+            <label for="userName">用户名:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="userName" name="userName">
+        </div>
+        <div class="form-group">
+            <label for="brand">品牌:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="brand" name="brand">
+        </div>
+        <div class="form-group">
+            <label for="modelNumber">型号:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="modelNumber" name="modelNumber">
+        </div>
+        <div class="form-group">
+            <label for="trackingNumber">运单号:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="trackingNumber" name="trackingNumber">
+        </div>
+        <div class="form-group">
+            <label for="UPC">UPC:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="UPC" name="UPC">
+        </div>
+
+        <div class="form-group">
+            <label for="shippingAddress">仓库:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="shippingAddress" name="shippingAddress">
+        </div>
+
+        <div class="form-group" style="display: none;">
+            <label for="companyName">仓库:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="companyName" name="companyName">
+        </div>
+
+        <div class="form-group">
+            <label for="lingqu"  >是否领取</label>
+            <select id="lingqu" name="lingqu" class="form-control mx-2 mt-2">
+                <option value="0">未领取</option>
+                <option value="1">已领取</option>
+                <option value="2">已完成</option>
+            </select>
+        </div>
+        <div class="form-group" style="display:none">
+            <label for="type">查询类型</label>
+            <input type="text" class="form-control mx-2 mt-2" id="type" name="type" value="NeedPaid">
+        </div>
+        <div class="form-group mb-2">
+            <button class="btn btn-primary pull-right mx-2 mt-2" type="button" onclick="query()">查询</button>
+            <button class="btn btn-default pull-right mx-2 mt-2" type="reset" onclick="query()">重置</button>
+        </div>
+    </form>
+
+    <table class="table table-hover table-bordered" id="dataTable">
+        <thead>
+        <tr>
+            <th width="5%">UID</th>
+            <th width="10%">用户名</th>
+            <th width="25%">型号<br>产品名</th>
+            <th width="10%">Brand:UPC<br>SKU:ASIN</th>
+            <th width="5%">数量<br>价格</th>
+            <th width="10%">报告时间<br>更新时间</th>
+            <th width="15%">地址:邮寄状态</th>
+            <th width="10%">包裹单号:Ship Id</th>
+            <th width="10%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container-fluid split-page">
+    <label class="split-page-item" for="pageSize">每页</label>
+    <select class="form-control split-page-item" style="width:70px;" id="pageSize">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>30</option>
+    </select>
+    <label class="split-page-item">条</label>
+    <label class="split-page-item">共<span id="totalCount"></span>条</label>
+    <label class="split-page-item"><a href="#" id="firstPage">首页</a></label>
+    <label class="split-page-item"><a href="#" id="prePage">上一页</a></label>
+    <label class="split-page-item">跳转 :</label>
+    <label class="split-page-item">
+        <input type="text" class="form-control" id="pageIndex" style="width:60px;">
+    </label>
+    <label class="split-page-item">/<span id="totalPages"></span></label>
+    <label class="split-page-item"><a href="#" id="nextPage">下一页</a></label>
+    <label class="split-page-item"><a href="#" id="lastPage">末页</a></label>
+    <label class="split-page-item"><a href="#" id="refresh">刷新</a></label>
+</div>
+
+</BODY>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //首先获取公司名称
+
+        //初始化分页控制按钮事件
+        initSplitPage();
+        //初始化页面数据
+        initPage();
+    });
+
+    function query() {
+        pageIndex = 1;
+        pageSize = $("#pageSize").val();
+        initPage();
+    }
+
+    function initPage() {
+        $.ajax({
+            type: 'GET',
+            url: "/company/getCurrentCompanyClient",
+            data: "",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                console.log(res);
+                if (res.data.state === "000000") {
+                    //解析数据
+                    $("#companyName").val(res.data.data.companyName);
+                    //序列化搜索框
+                    var params = $("#searchForm").serialize();
+                    if (params && params.length > 0) {
+                        params = params + "&"
+                    }
+                    //加上分页数据
+                    params = params + "pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+                    //后台获取数据
+                    var layerIndex = layer.load(1);
+                    $.ajax({
+                        type: 'POST',
+                        url: "/package/list",
+                        data: params,
+                        async: true,
+                        success: function (res) {
+                            layer.close(layerIndex);
+                            console.log(res)
+                            if (res.state === "000000") {
+                                //console.log(res.data);
+                                //解析数据
+                                pushData(res.data);
+                            } else {
+                                //业务错误提示
+                                // TODO  根据不同错误不同处理
+                                swalError(res.message);
+                            }
+                        }, error: function (res) {
+                            layer.close(layerIndex);
+                            swalSysError(res);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        var page = res.page;
+        $("#totalCount").text(page.totalCount);
+        $("#totalPages").text(page.totalPages);
+        $("#pageIndex").val(page.pageIndex);
+        for (var i = 0; i < data.length; i++) {
+            var row =
+                '<tr>' +
+                '<td>' + data[i].id + '</td>' +
+                '<td>' + data[i].userName + '</td>' +
+                '<td>' + data[i].modelNumber + '<br>' + data[i].productName + '</td>' +
+                '<td>' + emptyFormatter(data[i].brand) + '<br>' + emptyFormatter(data[i].upc) + '<br>' + emptyFormatter(data[i].sku) + '<br>' + emptyFormatter(data[i].asin) + '</td>' +
+                '<td>' + data[i].quantity + '<br>' + moneyFormatter(data[i].price) + '</td>' +
+                '<td>' + data[i].createdTime + '<br>' + data[i].updateTime + '</td>' +
+                '<td>' + data[i].shippingAddress + '<br>' + statusFormatter(data[i].status) + '<br>' + '</td>' +
+                '<td>' + emptyFormatter(data[i].trackingNumber) + '<br>' + emptyFormatter(data[i].shipID)  + '</td>' ;
+            if($("#lingqu").val() === '1'){
+                row = row +  '<td>' + '<button class="btn btn-primary" onclick="toPayPackagePage('+ data[i].id +')">支付包裹</button><button class="btn btn-default" onclick="cancelPayPackage('+ data[i].id +')">取消</button></td>';
+            }else if($("#lingqu").val() === '2'){
+                row = row +  '<td>Complete</td>';
+            }else{
+                row = row +  '<td>' + '<button class="btn btn-primary" onclick="Paid_One_CheckedPack(\''+ data[i].userName +'\')">领取该用户</button></td>';
+            }
+                row = row + '</tr>';
+            $("#dataTable tr:last").after(row);
+        }
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+
+    //支付包裹（转到支付页面）
+    function toPayPackagePage(obj) {
+        window.location.href="/view/EbizPackage/payPackage.html?packageIDStrings="+obj;
+    }
+    //取消支付任务
+    function cancelPayPackage(obj) {
+        $.ajax({
+            type: 'get',
+            url: "/package/cancelPayTask?packagesUID="+obj,
+            data: '',
+            async: true,
+            success: function (res) {
+                console.log(res);
+                alert(res.message)
+                if (res.state === "000000") {
+                    //console.log(res.data);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+                location.reload();
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        })
+    }
+
+    //领取该任务
+    function Paid_One_CheckedPack(obj) {
+        //发出Ajax请求
+        $.ajax({
+            type: 'POST',
+            url: "/package/takeOneUserPayTask?packageUserName="+obj,
+            data: '',
+            async: true,
+            success: function (res) {
+                console.log(res);
+                alert(res.data.message)
+                if (res.data.state === "000000") {
+                    //console.log(res.data);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+                location.reload();
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+
+    }
+
+
+
+</script>
+</HTML>

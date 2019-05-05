@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <title>领票或预报</title>
+</head>
+
+<script>
+
+    function reportPackage(){
+        $("#reportPackageForm").ajaxSubmit(function (data) {
+            alert(data);
+        })
+        return false;
+    }
+
+</script>
+
+
+<body>
+    <div class="container">
+        <div id="wrapper">
+            <div id="wrapperContent">
+                <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+                    <h3>领票或预报</h3>
+                        <br>
+                </div>
+
+                <form name="reportPackageForm" id="reportPackageForm"
+                      action="reportPackage" method="post"
+                      onsubmit="return reportPackage();">
+                    <table class="tablewithoutline">
+                        <tr>
+                            <td class="alignRight" style="width: 80px">选择商品：</td>
+                            <td><select
+                                        id="product" name="product" style="width: 100%">
+                                <option selected="selected" value="0">Please choose a
+                                    product</option>
+                                <option th:each="row :${productLists}" th:value="${row.id+','+row.productName+','+row.model+','+row.brand}" th:text="${row.productName+','+row.model}"></option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td class="alignRight" style="width: 80px">填写数量：</td>
+                            <td style="font-size: 16px"><input type="number"
+                                                               name="quantity" placeholder="Your Quantity" style="width: 150px"
+                                                               required /> Limit:<input type="text" id="ticket" name="ticket"
+                                                                                        value="0" style="width: 130px" readonly="readonly" />  Total left:<input type="text" id="ticketLeft" name="ticketLeft"
+                                                     value="0" style="width: 150px" readonly="readonly" />
+                                 <input type="hidden" id="ticketLeft" name="ticketLeft" value="0"
+                                                                                           readonly="readonly" /> </td>
+                        </tr>
+                        <tr>
+                            <td class="alignRight" style="width: 80px">信用卡信息：</td>
+                            <td><textarea name="CreditCardNumber"
+                                          placeholder="Credit Card Number, New Card Needs Bank Name At Least"
+                                          style="resize: none;" rows="4" required /></textarea></td>
+                        </tr>
+
+                        <tr>
+                            <td class="alignRight">选择地址：</td>
+                            <td>
+
+                                <div class='container'>
+                                    <input type="radio" id="address0" name="address1" th:value="${session.currentUser.getAddress()}" onclick="changeToHome()" checked>Home
+                                    <div th:if="${session.currentCompany.getAddressName1() ne null} ">
+                                        <input type="radio" id="address1" name="address1" th:value="${session.currentCompany.getAddressName1()}" onclick="changeToAddress1()"><span th:text="${session.currentCompany.getAddressName1()}"></span>
+                                    </div>
+                                    <div th:if="${session.currentCompany.getAddressName2() ne null}">
+                                        <input type="radio" id="address2" name="address1" th:value="${session.currentCompany.getAddressName2()}" onclick="changeToAddress2()"><span th:text="${session.currentCompany.getAddressName2()}"></span>
+                                    </div>
+
+                                    <div th:if="${session.currentCompany.getAddressName3() ne null}">
+                                        <input type="radio" id="address3" name="address1" th:value="${session.currentCompany.getAddressName3()}" onclick="changeToAddress3()"><span th:text="${session.currentCompany.getAddressName3()}"></span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="alignRight">或填写地址：</td>
+                            <td><input id="address" type="text" name="address" value=""
+                                       style="width: 60%" required th:value="${session.currentUser.getAddress()}"/></td>
+                        </tr>
+                    </table>
+
+                    <br>
+                    <div style="text-align: center;">
+                        <input type="submit" id="submitbutton" name="submitbutton"
+                               value="Submit" />
+                    </div>
+                </form>
+                <form method="post" action="GetReportedNumberServlet" id="ajaxForm">
+                    <input type="hidden" name="Model" id="Model" /><br> <input
+                        type="hidden" value="submit" id="ajaxSubmit" />&nbsp;&nbsp;
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    function changeToHome() {
+        $("input[name=address]").val($("#address0").val())
+    }
+
+    function changeToAddress1() {
+        $("input[name=address]").val($("#address1").val())
+    }
+
+    function changeToAddress2() {
+        $("input[name=address]").val($("#address2").val())
+    }
+
+
+    function changeToAddress3() {
+        $("input[name=address]").val($("#address3").val())
+    }
+</script>
+
+</html>

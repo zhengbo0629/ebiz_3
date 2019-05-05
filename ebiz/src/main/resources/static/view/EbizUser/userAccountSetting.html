@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>主账户管理</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+<div class="container">
+    <h2>用户资料(User Profile)</h2>
+    <h5 class="text-warning">密码和确认密码要一致才能更新用户资料</h5>
+    <form id="submitForm">
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="userName">登录名:</label>
+            <input class="form-control" id="userName" name="userName" readonly type="text"/>
+        </div>
+
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="email">公司邮箱:</label>
+            <input class="form-control" id="email" name="email" type="text"/>
+        </div>
+
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="phone">手机号码:</label>
+            <input class="form-control" id="phone" name="phone" type="text"/>
+        </div>
+
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="oldPassword">旧密码:</label>
+            <input class="form-control" id="oldPassword" name="oldPassword" type="password"/>
+        </div>
+
+    <div class="form-group form-inline">
+        <label class="col-sm-3  control-label justify-content-end" data-placement="bottom" data-toggle="tooltip"
+               for="password"
+               title="6-16位字母、数字、符号、区分大小写">新密码:</label>
+        <input class="form-control" id="password" name="password" type="password"/>
+        <label class="flex-1  text-danger ml-2" id="passwordLabel"></label>
+    </div>
+
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="confirmPassword">确认新密码:</label>
+            <input class="form-control" id="confirmPassword" name="confirmPassword" type="password"/>
+            <label class="flex-1 text-danger ml-2" id="confirmPasswordLabel"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="address">地址1:</label>
+            <input class="form-control" id="address" name="address" type="text"/>
+            <label class="flex-1  text-danger ml-2" id="addressLabel"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="address1">地址2:</label>
+            <input class="form-control" id="address1" name="address1" type="text"/>
+            <label class="flex-1  text-danger ml-2" id="addressLabel1"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label class="col-sm-3  control-label justify-content-end" for="address2">地址3:</label>
+            <input class="form-control" id="address2" name="address2" type="text"/>
+            <label class="flex-1  text-danger ml-2" id="addressLabel2"></label>
+        </div>
+        <button class="btn btn-warning  btn-block col-sm-3 m-auto mt-2" onclick="submitForm()"
+                type="button">更新用户信息
+        </button>
+    </form>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        initPage();
+        $("#password").blur(function () {
+            checkPassword();
+        });
+        $("#confirmPassword").blur(function () {
+            checkConfirmPassword();
+        })
+    });
+
+    function initPage() {
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/user/current",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    pushData(res.data);
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res.message);
+            }
+        });
+    }
+
+    function submitForm() {
+        if (!checkAll()) {
+            return;
+        }
+        var params = $("#submitForm").serialize();
+        console.log(params)
+        var layerIndex = 0;
+        layerIndex = layer.load(1);
+        $.ajax({
+            type: 'Put',
+            url: "/user/current",
+            data: params,
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    initPage();
+                    swalSuccess("更新成功");
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res.message);
+            }
+        });
+    }
+
+    function pushData(data) {
+        $("#address").val(data.address);
+        $("#address1").val(data.address1);
+        $("#address2").val(data.address2);
+        $("#email").val(data.email);
+        $("#phone").val(data.phoneNumber);
+        $("#userName").val(data.userName);
+    }
+    function checkAll() {
+        var flag3 = checkPassword();
+        var flag4 = checkConfirmPassword();
+        return flag3 && flag4;
+    }
+    function checkPassword() {
+        if ($("#password").val().length >= 7) {
+            $("#passwordLabel").text("");
+            return true;
+        } else {
+            $("#passwordLabel").text("password length should greater or equal to 7");
+            // $("#password").focus();
+            return false;
+        }
+    }
+
+    function checkConfirmPassword() {
+        if ($("#password").val() === $("#confirmPassword").val() && $("#confirmPassword").val().length >= 7) {
+            $("#confirmPasswordLabel").text("");
+            return true;
+        } else {
+            $("#confirmPasswordLabel").text("Your password and confirmPassword are not equal or length less than 7");
+            // $("#confirmPassword").focus();
+            return false;
+        }
+    }
+</script>
+</html>

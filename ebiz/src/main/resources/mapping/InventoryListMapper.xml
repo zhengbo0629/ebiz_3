@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ebiz.dao.InventoryListMapper" >
+  <resultMap id="BaseResultMap" type="com.ebiz.model.InventoryList" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="CompanyName" property="companyName" jdbcType="VARCHAR" />
+    <result column="Model" property="model" jdbcType="VARCHAR" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="ProductCondition" property="productCondition" jdbcType="VARCHAR" />
+    <result column="UPC" property="UPC" jdbcType="VARCHAR" />
+    <result column="ASIN" property="ASIN" jdbcType="VARCHAR" />
+    <result column="SKU" property="SKU" jdbcType="VARCHAR" />
+    <result column="Brand" property="brand" jdbcType="VARCHAR" />
+    <result column="Price" property="price" jdbcType="DOUBLE" />
+    <result column="Received" property="received" jdbcType="INTEGER" />
+    <result column="InStock" property="inStock" jdbcType="INTEGER" />
+    <result column="PreSend" property="preSend" jdbcType="INTEGER" />
+    <result column="Shipping" property="shipping" jdbcType="INTEGER" />
+    <result column="TotalShipped" property="totalShipped" jdbcType="INTEGER" />
+    <result column="CreatedTime" property="createdTime" jdbcType="VARCHAR" />
+    <result column="UpdateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+    <result column="WareHouse" property="wareHouse" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, CompanyName, Model, Name, ProductCondition, UPC, ASIN, SKU, Brand, Price, Received, 
+    InStock, PreSend, Shipping, TotalShipped, CreatedTime, UpdateTime, Note, WareHouse
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ebiz.model.InventoryListExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from inventorylist
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from inventorylist
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from inventorylist
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ebiz.model.InventoryListExample" >
+    delete from inventorylist
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ebiz.model.InventoryList" >
+    insert into inventorylist (id, CompanyName, Model, 
+      Name, ProductCondition, UPC, 
+      ASIN, SKU, Brand, Price, 
+      Received, InStock, PreSend, 
+      Shipping, TotalShipped, CreatedTime, 
+      UpdateTime, Note, WareHouse
+      )
+    values (#{id,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{productCondition,jdbcType=VARCHAR}, #{UPC,jdbcType=VARCHAR}, 
+      #{ASIN,jdbcType=VARCHAR}, #{SKU,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, 
+      #{received,jdbcType=INTEGER}, #{inStock,jdbcType=INTEGER}, #{preSend,jdbcType=INTEGER}, 
+      #{shipping,jdbcType=INTEGER}, #{totalShipped,jdbcType=INTEGER}, #{createdTime,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{wareHouse,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ebiz.model.InventoryList" >
+    insert into inventorylist
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyName != null" >
+        CompanyName,
+      </if>
+      <if test="model != null" >
+        Model,
+      </if>
+      <if test="name != null" >
+        Name,
+      </if>
+      <if test="productCondition != null" >
+        ProductCondition,
+      </if>
+      <if test="UPC != null" >
+        UPC,
+      </if>
+      <if test="ASIN != null" >
+        ASIN,
+      </if>
+      <if test="SKU != null" >
+        SKU,
+      </if>
+      <if test="brand != null" >
+        Brand,
+      </if>
+      <if test="price != null" >
+        Price,
+      </if>
+      <if test="received != null" >
+        Received,
+      </if>
+      <if test="inStock != null" >
+        InStock,
+      </if>
+      <if test="preSend != null" >
+        PreSend,
+      </if>
+      <if test="shipping != null" >
+        Shipping,
+      </if>
+      <if test="totalShipped != null" >
+        TotalShipped,
+      </if>
+      <if test="createdTime != null" >
+        CreatedTime,
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime,
+      </if>
+      <if test="note != null" >
+        Note,
+      </if>
+      <if test="wareHouse != null" >
+        WareHouse,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="productCondition != null" >
+        #{productCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="UPC != null" >
+        #{UPC,jdbcType=VARCHAR},
+      </if>
+      <if test="ASIN != null" >
+        #{ASIN,jdbcType=VARCHAR},
+      </if>
+      <if test="SKU != null" >
+        #{SKU,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="received != null" >
+        #{received,jdbcType=INTEGER},
+      </if>
+      <if test="inStock != null" >
+        #{inStock,jdbcType=INTEGER},
+      </if>
+      <if test="preSend != null" >
+        #{preSend,jdbcType=INTEGER},
+      </if>
+      <if test="shipping != null" >
+        #{shipping,jdbcType=INTEGER},
+      </if>
+      <if test="totalShipped != null" >
+        #{totalShipped,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="wareHouse != null" >
+        #{wareHouse,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ebiz.model.InventoryListExample" resultType="java.lang.Integer" >
+    select count(*) from inventorylist
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update inventorylist
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.companyName != null" >
+        CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.model != null" >
+        Model = #{record.model,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        Name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productCondition != null" >
+        ProductCondition = #{record.productCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.UPC != null" >
+        UPC = #{record.UPC,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ASIN != null" >
+        ASIN = #{record.ASIN,jdbcType=VARCHAR},
+      </if>
+      <if test="record.SKU != null" >
+        SKU = #{record.SKU,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brand != null" >
+        Brand = #{record.brand,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        Price = #{record.price,jdbcType=DOUBLE},
+      </if>
+      <if test="record.received != null" >
+        Received = #{record.received,jdbcType=INTEGER},
+      </if>
+      <if test="record.inStock != null" >
+        InStock = #{record.inStock,jdbcType=INTEGER},
+      </if>
+      <if test="record.preSend != null" >
+        PreSend = #{record.preSend,jdbcType=INTEGER},
+      </if>
+      <if test="record.shipping != null" >
+        Shipping = #{record.shipping,jdbcType=INTEGER},
+      </if>
+      <if test="record.totalShipped != null" >
+        TotalShipped = #{record.totalShipped,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdTime != null" >
+        CreatedTime = #{record.createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        Note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wareHouse != null" >
+        WareHouse = #{record.wareHouse,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update inventorylist
+    set id = #{record.id,jdbcType=INTEGER},
+      CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      Model = #{record.model,jdbcType=VARCHAR},
+      Name = #{record.name,jdbcType=VARCHAR},
+      ProductCondition = #{record.productCondition,jdbcType=VARCHAR},
+      UPC = #{record.UPC,jdbcType=VARCHAR},
+      ASIN = #{record.ASIN,jdbcType=VARCHAR},
+      SKU = #{record.SKU,jdbcType=VARCHAR},
+      Brand = #{record.brand,jdbcType=VARCHAR},
+      Price = #{record.price,jdbcType=DOUBLE},
+      Received = #{record.received,jdbcType=INTEGER},
+      InStock = #{record.inStock,jdbcType=INTEGER},
+      PreSend = #{record.preSend,jdbcType=INTEGER},
+      Shipping = #{record.shipping,jdbcType=INTEGER},
+      TotalShipped = #{record.totalShipped,jdbcType=INTEGER},
+      CreatedTime = #{record.createdTime,jdbcType=VARCHAR},
+      UpdateTime = #{record.updateTime,jdbcType=VARCHAR},
+      Note = #{record.note,jdbcType=VARCHAR},
+      WareHouse = #{record.wareHouse,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ebiz.model.InventoryList" >
+    update inventorylist
+    <set >
+      <if test="companyName != null" >
+        CompanyName = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        Model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="productCondition != null" >
+        ProductCondition = #{productCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="UPC != null" >
+        UPC = #{UPC,jdbcType=VARCHAR},
+      </if>
+      <if test="ASIN != null" >
+        ASIN = #{ASIN,jdbcType=VARCHAR},
+      </if>
+      <if test="SKU != null" >
+        SKU = #{SKU,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        Brand = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        Price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="received != null" >
+        Received = #{received,jdbcType=INTEGER},
+      </if>
+      <if test="inStock != null" >
+        InStock = #{inStock,jdbcType=INTEGER},
+      </if>
+      <if test="preSend != null" >
+        PreSend = #{preSend,jdbcType=INTEGER},
+      </if>
+      <if test="shipping != null" >
+        Shipping = #{shipping,jdbcType=INTEGER},
+      </if>
+      <if test="totalShipped != null" >
+        TotalShipped = #{totalShipped,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null" >
+        CreatedTime = #{createdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="wareHouse != null" >
+        WareHouse = #{wareHouse,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ebiz.model.InventoryList" >
+    update inventorylist
+    set CompanyName = #{companyName,jdbcType=VARCHAR},
+      Model = #{model,jdbcType=VARCHAR},
+      Name = #{name,jdbcType=VARCHAR},
+      ProductCondition = #{productCondition,jdbcType=VARCHAR},
+      UPC = #{UPC,jdbcType=VARCHAR},
+      ASIN = #{ASIN,jdbcType=VARCHAR},
+      SKU = #{SKU,jdbcType=VARCHAR},
+      Brand = #{brand,jdbcType=VARCHAR},
+      Price = #{price,jdbcType=DOUBLE},
+      Received = #{received,jdbcType=INTEGER},
+      InStock = #{inStock,jdbcType=INTEGER},
+      PreSend = #{preSend,jdbcType=INTEGER},
+      Shipping = #{shipping,jdbcType=INTEGER},
+      TotalShipped = #{totalShipped,jdbcType=INTEGER},
+      CreatedTime = #{createdTime,jdbcType=VARCHAR},
+      UpdateTime = #{updateTime,jdbcType=VARCHAR},
+      Note = #{note,jdbcType=VARCHAR},
+      WareHouse = #{wareHouse,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,305 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 更新包裹信息 </TITLE>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</HEAD>
+<BODY>
+<div class="container-fluid">
+    <h3>未发货和未确认包裹(UnReceived And Unconfirmed)</h3>
+    <form class="container-fluid form-inline" id="searchForm">
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" class="form-control mx-2 mt-2 mt-2" id="id" name="id">
+        </div>
+        <div class="form-group">
+            <label for="userName">用户名:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="userName" name="userName">
+        </div>
+        <div class="form-group">
+            <label for="brand">品牌:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="brand" name="brand">
+        </div>
+        <div class="form-group">
+            <label for="modelNumber">型号:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="modelNumber" name="modelNumber">
+        </div>
+        <div class="form-group">
+            <label for="trackingNumber">运单号:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="trackingNumber" name="trackingNumber">
+        </div>
+        <div class="form-group">
+            <label for="UPC">UPC:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="UPC" name="UPC">
+        </div>
+        <div class="form-group" style="display: none">
+            <label for="type">类型:</label>
+            <input type="text" value="unReceivedAndUnConfirmed" id="type"  name="type"/>
+        </div>
+        <div class="form-group">
+            <label for="payStatus">支付状态:</label>
+            <select type="text" class="form-control mx-2 mt-2" id="payStatus" name="payStatus">
+                <option></option>
+                <option>Paid</option>
+                <option>UnPaid</option>
+                <option>Paying</option>
+                <option>PartlyPaid</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="shippingAddress">仓库:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="shippingAddress" name="shippingAddress">
+        </div>
+        <div class="form-group" style="display: none">
+            <label for="companyName">公司名称</label>
+            <input type="text" class="form-control mx-2 mt-2" id="companyName" name="companyName" readonly>
+        </div>
+        <div class="form-group mb-2">
+            <button class="btn btn-primary pull-right mx-2 mt-2" type="button" onclick="query()">查询</button>
+            <button class="btn btn-default pull-right mx-2 mt-2" type="reset" onclick="query()">重置</button>
+        </div>
+    </form>
+
+    <table class="table table-hover table-bordered" id="dataTable">
+        <thead>
+        <tr>
+            <th width="5%">UID</th>
+            <th width="20%">Model<br/>ProductName</th>
+            <th width="5%">Quantity<br>Price</th>
+            <th width="10%">Address<br>Tracking Number</th>
+            <th width="15%">报告时间(Report Time)<br>更新时间(Update Time)</th>
+            <th width="15%">CreditCard<br>Pay Infor</th>
+            <th width="10%">Status</th>
+            <th width="10%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container-fluid split-page">
+    <label class="split-page-item" for="pageSize">每页</label>
+    <select class="form-control split-page-item" style="width:70px;" id="pageSize">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>30</option>
+    </select>
+    <label class="split-page-item">条</label>
+    <label class="split-page-item">共<span id="totalCount"></span>条</label>
+    <label class="split-page-item"><a href="#" id="firstPage">首页</a></label>
+    <label class="split-page-item"><a href="#" id="prePage">上一页</a></label>
+    <label class="split-page-item">跳转 :</label>
+    <label class="split-page-item">
+        <input type="text" class="form-control" id="pageIndex" style="width:60px;">
+    </label>
+    <label class="split-page-item">/<span id="totalPages"></span></label>
+    <label class="split-page-item"><a href="#" id="nextPage">下一页</a></label>
+    <label class="split-page-item"><a href="#" id="lastPage">末页</a></label>
+    <label class="split-page-item"><a href="#" id="refresh">刷新</a></label>
+</div>
+
+</BODY>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //首先获取公司名称
+
+        //初始化分页控制按钮事件
+        initSplitPage();
+        //初始化页面数据
+        initPage();
+    });
+
+    function query() {
+        pageIndex = 1;
+        pageSize = $("#pageSize").val();
+        initPage();
+    }
+
+    function initPage() {
+        $.ajax({
+            type: 'GET',
+            url: "/company/getCurrentCompanyClient",
+            data: "",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                console.log(res);
+                if (res.data.state === "000000") {
+                    //解析数据
+                    $("#companyName").val(res.data.data.companyName);
+                    //序列化搜索框
+                    var params = $("#searchForm").serialize();
+                    if (params && params.length > 0) {
+                        params = params + "&"
+                    }
+                    //加上分页数据
+                    params = params + "pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+                    //后台获取数据
+                    var layerIndex = layer.load(1);
+                    $.ajax({
+                        type: 'POST',
+                        url: "/package/list",
+                        data: params,
+                        async: true,
+                        success: function (res) {
+                            layer.close(layerIndex);
+                            console.log(res)
+                            if (res.state === "000000") {
+                                //console.log(res.data);
+                                //解析数据
+                                pushData(res.data);
+                            } else {
+                                //业务错误提示
+                                // TODO  根据不同错误不同处理
+                                swalError(res.message);
+                            }
+                        }, error: function (res) {
+                            layer.close(layerIndex);
+                            swalSysError(res);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        var page = res.page;
+        $("#totalCount").text(page.totalCount);
+        $("#totalPages").text(page.totalPages);
+        $("#pageIndex").val(page.pageIndex);
+        for (var i = 0; i < data.length; i++) {
+            var row =
+                '<tr>' +
+                '<td>' + data[i].id + '</td>' +
+                '<td>' + data[i].modelNumber + data[i].productName + '</td>' +
+                '<td>' + emptyFormatter(data[i].quantity) + '<br>' + moneyFormatter(data[i].price) + '</td>' +
+                '<td>' + emptyFormatter(data[i].shippingAddress) + '<br>' + emptyFormatter(data[i].trackingNumber) + '<br>' + '</td>' +
+                '<td>' + data[i].createdTime + '<br>' + data[i].updateTime + '</td>' +
+                '<td>' + data[i].creditCardNumber + '</td>' +
+                '<td>' + data[i].status + '</td>' +
+                '<td>' + '<button class="btn btn-primary" onclick="Simple_Update_package(\''+ data[i].shippingAddress + '.' + data[i].id +'\')">Update</button><button class="btn btn-danger" onclick="Simple_Delete_package('+ data[i].id +')">Delete</button></td>' +
+                '</tr>';
+            $("#dataTable tr:last").after(row);
+        }
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Complete')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'Deleted')
+            return '<span class="badge badge-pill  badge-danger">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+    
+    //单个更新包裹
+    function Simple_Update_package(obj) {
+        var params = obj.split(".");
+        var address = params[0];
+        var id = params[1];
+        $.ajax({
+            type: 'GET',
+            url: "/company/getEbizCompanyAddressEnumList",
+            data: "",
+            async: true,
+            success: function (res) {
+                if (res.data.state === "000000") {
+                    var data = res.data.data;
+                    var flag = true;
+                    for(var i = 0 ; i < data.length ; i++){
+                        if(address === data[i]){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag){
+                        window.location.href="/view/EbizPackage/editWareHousePackage.html?packageId="+id;
+                    }else{
+                        window.location.href="/view/EbizPackage/editUnreceivedPackage.html?packageId="+id;
+                    }
+                }
+            }
+        });
+        //window.location.href="/view/EbizPackage/edit.html?packageId="+obj;
+    }
+
+    //删除包裹
+    function Simple_Delete_package(obj) {
+        $.ajax({
+            type: 'GET',
+            url: "/package/deletePackageById?packageId="+obj,
+            data: "",
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                console.log(res);
+                if (res.data.state === "000000") {
+                    //解析数据
+                    $("#companyName").val(res.data.data.companyName);
+                    //序列化搜索框
+                    var params = $("#searchForm").serialize();
+                    if (params && params.length > 0) {
+                        params = params + "&"
+                    }
+                    //加上分页数据
+                    params = params + "pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+                    //后台获取数据
+                    var layerIndex = layer.load(1);
+                    $.ajax({
+                        type: 'POST',
+                        url: "/package/list",
+                        data: params,
+                        async: true,
+                        success: function (res) {
+                            layer.close(layerIndex);
+                            console.log(res)
+                            if (res.state === "000000") {
+                                //console.log(res.data);
+                                //解析数据
+                                pushData(res.data);
+                            } else {
+                                //业务错误提示
+                                // TODO  根据不同错误不同处理
+                                swalError(res.message);
+                            }
+                        }, error: function (res) {
+                            layer.close(layerIndex);
+                            swalSysError(res);
+                        }
+                    });
+                }
+            }
+        });
+    }
+    
+    
+</script>
+</HTML>

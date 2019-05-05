@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发送邮件</title>
+
+    <!-- 引入bootstrap-table样式 -->
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+
+    <!-- bootstrap-table.min.js -->
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+</head>
+
+<script type="text/javascript">
+
+    function editWareHousePackage(){
+        $("#edit").ajaxSubmit(function(msg){
+            alert(msg);
+            $("#edit input[type=reset]").trigger("click");
+            //self.location.reload();
+        });
+        return false;
+    }
+
+    function sendEmail() {
+        $("#edit")
+            .ajaxSubmit(
+                {
+                    beforeSubmit : function() {
+                        // alert("我在提交表单之前被调用！");
+                    },
+                    success : function(data) {
+                        alert(data);
+                        history.go(-1);
+                    }
+                });
+
+    }
+</script>
+
+
+<body>
+
+<div class="container">
+<div id="wrapper">
+    <div id="wrapperContent">
+        <div align="center" style="padding-bottom: 1px; padding-top: 10px;">
+            <h3>发送邮件</h3>
+        </div>
+
+        <div align=center>
+            <div align=left
+                 style="width: 99%; float: left; border: 0px solid #d7d7d7; min-height: 400px; font-size: 14px">
+                <form name="edit" id="edit" action="/companyManager/sendEmailtoOneEmailAddress" method="post" enctype="multipart/form-data">
+                    <br> <br>
+
+                    <div class="clear"></div>
+                    Email Address: <input style="width: 20%; height: 25px"
+                                          type="text" id="emailAddress" name="emailAddress"
+                                          value="" placeholder="Emial Address" />&emsp;
+                    <br> <br>
+                    Email Title: &emsp;&emsp;<input style="width: 50%; height: 25px"
+                                                    type="text" id="emailTitle" name="emailTitle"
+                                                    value="" placeholder="Emial Title" /><br>  <br> <br>
+                    Email Content:<br>
+                    <textarea id="emailContent" name="emailContent"
+                              style="background-color: transparent; resize: none;" rows="15"
+                              cols="58" placeholder="Emial Content">Dear</textarea>
+                    <br><br>
+
+                    AttachedFile:<br>
+
+                    <input type="file" id="files" name="files[]" multiple />
+                    <output id="list"></output>
+
+                    <textarea id="fileNames" name="fileNames"
+                              style="background-color: transparent; resize: none;" rows="5"
+                              cols="58" placeholder="File Names"></textarea>
+                    <div align=center>
+                        <input type="submit" value="Send Email"
+                               onClick="sendEmail()" />
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

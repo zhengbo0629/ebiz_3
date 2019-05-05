@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>主账户管理</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+<h2>公司资料(Company Profile)</h2>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-5">
+            <form name="updatePaymentDayForm" method="post" id="updatePaymentDayForm" action="/company/payment">
+                <h5>支付设置</h5>
+                <div class="mb-3">
+                    <label>设置支付时间：</label>
+                    <label>系统会根据你设置的支付时间自动计算下一个支付日，会显示在所有用户的账户里，年设置为0以后不显示支付时间信息</label>
+                </div>
+                <div class="form-group">
+                    <label for="payPeriod">设置支付周期：(Please chose a pay period)</label>
+                    <select class="form-control" id="payPeriod" name="payPeriod">
+                        <!--<option value="Active">激活</option>-->
+                    </select>
+                </div>
+                <div class="form-group  form-inline">
+                    <label for="paymentDay">设置支付日：(Please chose a example of payment day)</label>
+                    <div class="input-group " id="paymentDay">
+                        <input type="number" min="0" class="form-control" placeholder="Year" name="year" id="year">
+                        <input type="number" min="1" max="12" class="form-control" placeholder="Month" name="month"
+                               id="month">
+                        <input type="number" min="1" max="31" class="form-control" placeholder="day" name="day"
+                               id="day">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning  btn-block col-sm-6 m-auto"
+                        onclick="submitFormPaymentDay()">更新支付日期(Update PaymentDay)
+                </button>
+            </form>
+        </div>
+        <div class="col-sm-7">
+            <form name="updateCompanyAddressForm" method="post" id="updateCompanyAddressForm" action="/company/address">
+                <h5>公司信息</h5>
+                <label>设置公司地址：(Company Address)</label>
+                <label>系统会保留三个公司地址名称方便子账号下单报单用(长读小于100)</label>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group form-inline">
+                            <label for="addressName1" class="control-label mr-2">地址1:</label>
+                            <input type="text" class="form-control" id="addressName1" name="addressName1"
+                                   placeholder="Address Name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressDetail1" class="control-label">地址1详情:</label>
+                            <textarea class="form-control" rows="3" id="addressDetail1" name="addressDetail1"
+                                      placeholder="Address Detail"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group form-inline">
+                            <label for="addressName2" class="control-label mr-2">地址2:</label>
+                            <input type="text" class="form-control" id="addressName2" name="addressName2"
+                                   placeholder="Address Name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressDetail2" class="control-label">地址2详情:</label>
+                            <textarea class="form-control" rows="3" id="addressDetail2" name="addressDetail2"
+                                      placeholder="Address Detail"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group form-inline">
+                            <label for="addressName3" class="control-label mr-2">地址3:</label>
+                            <input type="text" class="form-control" id="addressName3" name="addressName3"
+                                   placeholder="Address Name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressDetail3" class="control-label">地址3详情:</label>
+                            <textarea class="form-control" rows="3" id="addressDetail3" name="addressDetail3"
+                                      placeholder="Address Detail"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group  form-inline col-sm-8">
+                        <label for="emailGroup" class="mr-2">Email:</label>
+                        <div class="input-group " id="emailGroup">
+                            <input type="text" class="form-control" placeholder="Email" name="email" id="email">
+                            <input type="text" class="form-control" placeholder="Email Password" name="emailPassword"
+                                   id="emailPassword">
+                        </div>
+                        <label id="email-label" class="flex-1 warn-tip"></label>
+                    </div>
+                    <div class="form-group  form-inline col-sm-4">
+                        <label for="phoneNumber" class="mr-2">Phone:</label>
+                        <input type="text" class="form-control" placeholder="Phone Number" name="phoneNumber"
+                               id="phoneNumber">
+                        <label id="phone-label" class="flex-1 warn-tip"></label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning  btn-block col-sm-6 m-auto"
+                        onclick="submitFormAddressEmailPhone()">更新地址、邮箱、手机号码(Update Address,Email,Phone)
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <form name="updateUserManualForm" method="post" id="updateUserManualForm" action="/company/user-manual"
+              class="container-fluid">
+            <h5>用户手册:</h5>
+            <div class="form-group">
+                <label for="userManual">设置的用户手册内容会作为贵公司所有人的用户手册内容，长度不要超过5000字</label>
+                <textarea class="form-control" rows="10" id="userManual" name="userManual"
+                          placeholder="User Manual"></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning  btn-block col-sm-3 m-auto mt-2"
+                    onclick="submitFormUserManual()">更新用户手册(Update User Manual)
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        initPage();
+    });
+
+    function initPage() {
+        getPayPeroid(function () {
+            var layerIndex = layer.load(1);
+            $.ajax({
+                type: 'GET',
+                url: "/company/current",
+                data: {},
+                async: true,
+                success: function (res) {
+                    layer.close(layerIndex);
+                    if (res.state === "000000") {
+                        pushDataUserManual(res.data);
+                        pushDataPayment(res.data);
+                        pushDataAddress(res.data);
+                    } else {
+                        swalError(res.message);
+                    }
+                }, error: function (res) {
+                    layer.close(layerIndex);
+                    swalSysError(res.message);
+                }
+            });
+        })
+    }
+
+    function getPayPeroid(fun) {
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/company/pay-period",
+            data: {},
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    var periods = res.data;
+                    for (var i = 0; i < periods.length; i++) {
+                        $("#payPeriod").append("<option value='" + periods[i] + "'>" + periods[i] + "</option>")
+                    }
+                    fun();
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function submitFormUserManual() {
+        var layerIndex = 0;
+        $("#updateUserManualForm").ajaxForm({
+            beforeSubmit: function () {
+                layerIndex = layer.load(1);
+            },
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    initPage();
+                    swalSuccess("更新成功");
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function submitFormAddressEmailPhone() {
+        var layerIndex = 0;
+        $("#updateCompanyAddressForm").ajaxForm({
+            beforeSubmit: function () {
+                layerIndex = layer.load(1);
+            },
+            success: function (res) {
+                if (res.state === "000000") {
+                    initPage();
+                    swalSuccess("更新成功");
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function submitFormPaymentDay() {
+        var layerIndex = 0;
+        $("#updatePaymentDayForm").ajaxForm({
+            beforeSubmit: function () {
+                layerIndex = layer.load(1);
+            },
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    initPage();
+                    swalSuccess("更新成功");
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function pushDataPayment(data) {
+        if (data.payPeriod) {
+            $("#payPeriod").val(data.payPeriod);
+        }
+        if (data.payTime) {
+            var time = data.payTime.split("-");
+            if (time && time.length > 0) {
+                $("#year").val(time[0]);
+                $("#month").val(time[1]);
+                $("#day").val(time[2]);
+            }
+        }
+    }
+
+    function pushDataUserManual(data) {
+        $("#userManual").val(data.userManual);
+    }
+
+    function pushDataAddress(data) {
+        $("#addressName1").val(data.addressName1);
+        $("#addressName2").val(data.addressName2);
+        $("#addressName3").val(data.addressName3);
+        $("#addressDetail1").val(data.addressDetail1);
+        $("#addressDetail2").val(data.addressDetail2);
+        $("#addressDetail3").val(data.addressDetail3);
+        $("#email").val(data.email);
+        $("#emailPassword").val(data.emailPassword);
+        $("#phoneNumber").val(data.phoneNumber);
+    }
+</script>
+</html>

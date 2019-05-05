@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>主账户管理</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+<h2>更新包裹</h2>
+<div class="container">
+    <form method="post" id="submitForm" action="/package/update/">
+        <div class="form-group form-inline">
+            <label class="col-sm-3 control-label justify-content-end" for="uid">Package ID:</label>
+            <input id="uid" class="d-none" name="id">
+            <label id="id" class="flex-1 justify-content-start"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label for="productName" class="col-sm-3 control-label justify-content-end">Product Name:</label>
+            <label id="productName" class="flex-1 justify-content-start"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label for="shippingAddress" class="col-sm-3 control-label justify-content-end">Shipping Address:</label>
+            <label id="shippingAddress" class="flex-1 justify-content-start"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label for="quantity" class="col-sm-3 control-label justify-content-end">Total Quantity:</label>
+            <input type="number" class="form-control col-sm-4" id="quantity" name="quantity" min="1"
+                   onchange="quantityChange()"/>
+            <label id="quantity-label" class="flex-1 text-danger"></label>
+        </div>
+        <div class="form-group form-inline">
+            <label for="status-div" class="col-sm-3 control-label justify-content-end">InStock? :</label>
+            <div class="custom-control custom-checkbox" id="status-div">
+                <input type="checkbox" class="custom-control-input" id="customCheck" name="status" value="InStock">
+                <label class="custom-control-label" for="customCheck"></label>
+            </div>
+        </div>
+        <div class="form-group form-inline">
+            <label for="creditCardNumber" class="col-sm-3 control-label justify-content-end">CreditCard
+                Information:</label>
+            <textarea rows="5" class="form-control col-sm-4 " id="creditCardNumber" name="creditCardNumber"></textarea>
+        </div>
+        <div class="form-group form-inline">
+            <button type="submit" class="btn btn-warning  col-sm-1 offset-3 " onclick="submitForm()">更新</button>
+            <button type="button" class="btn btn-dark  col-sm-1 offset-1" onclick="deletePack()">删除</button>
+        </div>
+    </form>
+</div>
+</body>
+
+<script>
+    var id;
+    var defaultQuantity;
+    $(document).ready(function () {
+        initPage();
+    });
+
+    function initPage() {
+        id = getQueryParam("id");
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/package/" + id,
+            data: {},
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                console.log(res)
+                if (res.state === "000000") {
+                    pushData(res.data);
+                } else {
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function submitForm() {
+        var layerIndex = 0;
+        $("#submitForm").ajaxForm({
+            beforeSubmit: function () {
+                layerIndex = layer.load(1);
+            },
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    initPage();
+                    swalSuccess("更新成功");
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError();
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function pushData(data) {
+        $("#id").text(data.id);
+        $("#uid").val(data.id);
+        $("#productName").text(data.productName);
+        $("#shippingAddress").text(data.shippingAddress);
+        $("#quantity").val(data.quantity);
+        defaultQuantity = data.quantity;
+        $("#creditCardNumber").val(data.creditCardNumber);
+        $("#status").val(data.status);
+    }
+
+    function quantityChange() {
+        var oldQuantity = parseInt(defaultQuantity);
+        var newQuantity = parseInt($("#quantity").val());
+        if (newQuantity > oldQuantity) {
+            $("#quantity").val(oldQuantity);
+            $("#quantity-label").text("Please Contact the Administrator to increase the Total Quantity");
+            return;
+        } else {
+            $("#quantity-label").text("");
+        }
+    }
+
+    function deletePack() {
+        swal({
+            title: "删除包裹",
+            text: "确定删除？",
+            icon: "warning",
+            buttons: {
+                cancel: "取消",
+                default: "删除"
+            },
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                var layerIndex = layer.load(1);
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/package/" + id,
+                    data: {},
+                    async: true,
+                    success: function (res) {
+                        layer.close(layerIndex);
+                        console.log(res);
+                        if (res.state === "000000") {
+                            $(window).attr('location', '/view/EbizPackage/unReceivedPac.html');
+                        } else {
+                            swalError(res.message);
+                        }
+                    }, error: function (res) {
+                        layer.close(layerIndex);
+                        swalSysError(res);
+                    }
+                });
+            } else {
+                swal("已取消!");
+            }
+        });
+    }
+</script>
+</html>

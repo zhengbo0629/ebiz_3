@@ -1,0 +1,200 @@
+<!DOCTYPE >
+<HTML>
+<HEAD>
+    <TITLE> 产品管理 </TITLE>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</HEAD>
+<BODY>
+<div class="container-fluid">
+    <h3>热门产品(Hot Product)</h3>
+    <form class="container-fluid form-inline" id="searchForm">
+        <div class="form-group">
+            <label for="id">UID:</label>
+            <input class="form-control mx-2 mt-2 mt-2" id="id" name="id" type="text">
+        </div>
+        <div class="form-group">
+            <label for="modelNumber">Model:</label>
+            <input class="form-control mx-2 mt-2" id="modelNumber" name="model" type="text">
+        </div>
+        <div class="form-group">
+            <label for="productName">ProductName:</label>
+            <input class="form-control mx-2 mt-2" id="productName" name="productName" type="text">
+        </div>
+        <div class="form-group">
+            <label for="priceLevel">Price:</label>
+            <select class="form-control mx-2 mt-2" id="priceLevel" name="priceLevel">
+                <option value="0">全部</option>
+                <option value="1">200$以下</option>
+                <option value="2">200-500$</option>
+                <option value="3">500-800$</option>
+                <option value="4">800-1000$</option>
+                <option value="5">1000$以上</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-2">
+            <button class="btn btn-primary pull-right mx-2 mt-2" onclick="query()" type="button">查询</button>
+            <button class="btn btn-default pull-right mx-2 mt-2" onclick="query()" type="reset">重置</button>
+        </div>
+    </form>
+
+    <table class="table table-hover table-bordered" id="dataTable">
+        <thead>
+        <tr>
+            <th width="5%">UID</th>
+            <th width="13%">产品型号 Model</th>
+            <th width="40%">产品名称 ProductName</th>
+            <th width="8%">收购价格 Buy Price</th>
+            <th width="8%">领票 Get Tickets</th>
+            <th width="8%">查看网页 View</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container-fluid split-page">
+    <label class="split-page-item" for="pageSize">每页</label>
+    <select class="form-control split-page-item" id="pageSize" style="width:70px;">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>30</option>
+    </select>
+    <label class="split-page-item">条</label>
+    <label class="split-page-item">共<span id="totalCount"></span>条</label>
+    <label class="split-page-item"><a href="#" id="firstPage">首页</a></label>
+    <label class="split-page-item"><a href="#" id="prePage">上一页</a></label>
+    <label class="split-page-item">跳转 :</label>
+    <label class="split-page-item">
+        <input class="form-control" id="pageIndex" style="width:60px;" type="text">
+    </label>
+    <label class="split-page-item">/<span id="totalPages"></span></label>
+    <label class="split-page-item"><a href="#" id="nextPage">下一页</a></label>
+    <label class="split-page-item"><a href="#" id="lastPage">末页</a></label>
+    <label class="split-page-item"><a href="#" id="refresh">刷新</a></label>
+</div>
+
+</BODY>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //初始化分页控制按钮事件
+        initSplitPage();
+        //初始化页面数据
+        initPage();
+    });
+
+    function query() {
+        pageIndex = 1;
+        pageSize = $("#pageSize").val();
+        initPage();
+    }
+
+    function initPage() {
+        //序列化搜索框
+        var params = $("#searchForm").serialize();
+        if (params && params.length > 0) {
+            params = params + "&"
+        }
+        //加上分页数据
+        params = params + "pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/product/live-deal/list",
+            data: params,
+            async: true,
+            success: function (res) {
+                console.log(res)
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    //解析数据
+                    pushData(res.data);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        var page = res.page;
+        $("#totalCount").text(page.totalCount);
+        $("#totalPages").text(page.totalPages);
+        $("#pageIndex").val(page.pageIndex);
+
+        for (var i = 0; i < data.length; i++) {
+            var row =
+                '<tr>' +
+                '<td>' + data[i].id + '</td>' +
+                '<td>' + emptyFormatter(data[i].model) + '</td>' +
+                '<td>' + productNameFormatter(data[i].productName, data[i].uri) + '</td>' +
+                '<td>' + moneyFormatter(data[i].price) + '</td>>' +
+                '<td>' + funFormatter() + '</td>' +
+                '<td>' + uriFormatter(data[i].uri) + '</td>' +
+                '</tr>';
+            $("#dataTable tr:last").after(row);
+        }
+    }
+
+    //避免页面上出现 null
+    function emptyFormatter(data) {
+        if (!data) {
+            return ""
+        }
+        return data;
+    }
+
+
+    //优化页面显示
+    function moneyFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        return "$" + data;
+    }
+
+    //单个产品进行修改
+    function uriFormatter(url) {
+        if (!url) {
+            return '';
+        }
+        return '<a href="' + url + '"  target="view_window">查看</a>'
+    }
+
+    function productNameFormatter(name, url) {
+        return '<a href="' + url + '"  target="view_window">' + name + '</a>'
+    }
+
+    function funFormatter() {
+        return '<a  href="../EbizPackage/reportPackage.html">领票</a>'
+    }
+</script>
+</HTML>

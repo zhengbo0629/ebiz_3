@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>主账户管理</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/layer/layer.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <h2>主账户管理</h2>
+    <form class="container-fluid form-inline" id="searchForm">
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" class="form-control mx-2 mt-2 mt-2" id="id" name="id">
+        </div>
+        <div class="form-group">
+            <label for="userName">用户名:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="userName" name="userName">
+        </div>
+        <div class="form-group">
+            <label for="status">状态:</label>
+            <select type="text" class="form-control mx-2 mt-2" id="status" name="status">
+                <option></option>
+                <option value="Active">激活</option>
+                <option value="UnActive">未激活</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="companyName">公司:</label>
+            <input type="text" class="form-control mx-2 mt-2" id="companyName" name="companyName">
+        </div>
+        <div class="form-group mb-2">
+            <button class="btn btn-primary pull-right mx-2 mt-2" type="button" onclick="query()">查询</button>
+            <button class="btn btn-default pull-right mx-2 mt-2" type="reset" onclick="query()">重置</button>
+        </div>
+    </form>
+    <table class="table table-hover table-bordered" id="dataTable">
+        <thead>
+        <tr>
+            <th width="5%">ID</th>
+            <th width="10%">UserName<br>CompanyName</th>
+            <th width="10%">FirstName<br>LastName</th>
+            <th width="15%">Email<br>PhoneNumber</th>
+            <th width="10%">Address</th>
+            <th width="5%">UserType</th>
+            <th width="10%">CreatedTime<br>UpdatedTime</th>
+            <th width="5%">Status</th>
+            <th width="15%">Note</th>
+            <th width="5%">Balance</th>
+            <th width="5%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container-fluid split-page">
+    <label class="split-page-item" for="pageSize">每页</label>
+    <select class="form-control split-page-item" style="width:70px;" id="pageSize">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>30</option>
+    </select>
+    <label class="split-page-item">条</label>
+    <label class="split-page-item">共<span id="totalCount"></span>条</label>
+    <label class="split-page-item"><a href="#" id="firstPage">首页</a></label>
+    <label class="split-page-item"><a href="#" id="prePage">上一页</a></label>
+    <label class="split-page-item">跳转 :</label>
+    <label class="split-page-item">
+        <input type="text" class="form-control" id="pageIndex" style="width:60px;">
+    </label>
+    <label class="split-page-item">/<span id="totalPages"></span></label>
+    <label class="split-page-item"><a href="#" id="nextPage">下一页</a></label>
+    <label class="split-page-item"><a href="#" id="lastPage">末页</a></label>
+    <label class="split-page-item"><a href="#" id="refresh">刷新</a></label>
+</div>
+
+</body>
+<script>
+    $(document).ready(function () {
+        //初始化分页控制按钮事件
+        initSplitPage();
+        //初始化页面数据
+        initPage();
+    });
+
+    function query() {
+        pageIndex = 1;
+        pageSize = $("#pageSize").val();
+        initPage();
+    }
+
+    function initPage() {
+        //序列化搜索框
+        var params = $("#searchForm").serialize();
+        if (params && params.length > 0) {
+            params = params + "&"
+        }
+        //加上分页数据
+        params = params + "pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+        //后台获取数据
+        var layerIndex = layer.load(1);
+        $.ajax({
+            type: 'GET',
+            url: "/system-manage/doctor/list",
+            data: params,
+            async: true,
+            success: function (res) {
+                layer.close(layerIndex);
+                if (res.state === "000000") {
+                    //解析数据
+                    pushData(res.data);
+                } else {
+                    //业务错误提示
+                    // TODO  根据不同错误不同处理
+                    swalError(res.message);
+                }
+            }, error: function (res) {
+                layer.close(layerIndex);
+                swalSysError(res);
+            }
+        });
+    }
+
+
+    $('#dataTable').on('dblclick', 'tr', function () {
+        //得到当前所在行
+        var id = $(this).find('td').eq(0).html();
+        $(window).attr('location', '/view/SystemManage/updateDoctorUserInfo.html?id=' + id);
+    });
+
+    function pushData(res) {
+        //清空表格
+        $("#dataTable tr:not(:first)").empty();
+        var data = res.data;
+        var page = res.page;
+        $("#totalCount").text(page.totalCount);
+        $("#totalPages").text(page.totalPages);
+        $("#pageIndex").val(page.pageIndex);
+
+        var data = res.data;
+        for (var i = 0; i < data.length; i++) {
+            var address1 = "";
+            var address2 = "";
+            var address3 = "";
+            var address = data[i].address.split(",");
+            if (address) {
+                if (address[0]) {
+                    address1 = address[0];
+                }
+                if (address[1]) {
+                    address2 = address[1];
+                }
+                if (address[2]) {
+                    address3 = address[2];
+                }
+            }
+            var row =
+                '<tr>' +
+                '<td>' + data[i].id + '</td>' +
+                '<td>' + data[i].userName + '<br>' + data[i].companyName + '</td>' +
+                '<td>' + data[i].firstName + '<br>' + data[i].lastName + '</td>' +
+                '<td>' + data[i].email + '<br>' + data[i].phoneNumber + '</td>' +
+                '<td>' + address1 + '<br>' + address2 + '<br>' + address3 + '</td>' +
+                '<td>' + data[i].userType + '</td>' +
+                '<td>' + data[i].createTime + '<br>' + data[i].updateTime + '</td>' +
+                '<td>' + statusFormatter(data[i].status) + '</td>' +
+                '<td>' + data[i].note + '</td>' +
+                '<td>' + moneyFormatter(data[i].balance) + '</td>' +
+                '<td>' + funFormatter(data[i].id) + '</td>' +
+                '</tr>';
+            $("#dataTable tr:last").after(row);
+        }
+    }
+
+    //优化页面显示
+    function statusFormatter(data) {
+        if (!data) {
+            return '';
+        }
+        if (data === 'Active')
+            return '<span class="badge badge-pill badge-success">' + data + '</span>';
+        else if (data === 'UnActive')
+            return '<span class="badge badge-pill  badge-warning">' + data + '</span>';
+        else return '<span class="badge badge-pill  badge-default">' + data + '</span>';
+    }
+    function fun(id) {
+        $(window).attr('location', '/view/SystemManage/updateDoctorUserInfo.html?id=' + id);
+    }
+
+    function funFormatter(id) {
+        return '<a class="text-info" onclick="fun(' + id + ')">' +' 更新</a>'
+    }
+</script>
+</html>

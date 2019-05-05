@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ebiz.dao.OperationRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.ebiz.model.OperationRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="UserName" property="userName" jdbcType="VARCHAR" />
+    <result column="CompanyName" property="companyName" jdbcType="VARCHAR" />
+    <result column="OperationName" property="operationName" jdbcType="VARCHAR" />
+    <result column="TableName" property="tableName" jdbcType="VARCHAR" />
+    <result column="ColumnName" property="columnName" jdbcType="VARCHAR" />
+    <result column="RowId" property="rowId" jdbcType="INTEGER" />
+    <result column="OperationStatus" property="operationStatus" jdbcType="VARCHAR" />
+    <result column="OldValue" property="oldValue" jdbcType="VARCHAR" />
+    <result column="NewValue" property="newValue" jdbcType="VARCHAR" />
+    <result column="TimeString" property="timeString" jdbcType="VARCHAR" />
+    <result column="Discription" property="discription" jdbcType="VARCHAR" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, UserName, CompanyName, OperationName, TableName, ColumnName, RowId, OperationStatus, 
+    OldValue, NewValue, TimeString, Discription, Note
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ebiz.model.OperationRecordExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from operationrecord
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from operationrecord
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from operationrecord
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ebiz.model.OperationRecordExample" >
+    delete from operationrecord
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ebiz.model.OperationRecord" >
+    insert into operationrecord (id, UserName, CompanyName, 
+      OperationName, TableName, ColumnName, 
+      RowId, OperationStatus, OldValue, 
+      NewValue, TimeString, Discription, 
+      Note)
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{operationName,jdbcType=VARCHAR}, #{tableName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, 
+      #{rowId,jdbcType=INTEGER}, #{operationStatus,jdbcType=VARCHAR}, #{oldValue,jdbcType=VARCHAR}, 
+      #{newValue,jdbcType=VARCHAR}, #{timeString,jdbcType=VARCHAR}, #{discription,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ebiz.model.OperationRecord" >
+    insert into operationrecord
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userName != null" >
+        UserName,
+      </if>
+      <if test="companyName != null" >
+        CompanyName,
+      </if>
+      <if test="operationName != null" >
+        OperationName,
+      </if>
+      <if test="tableName != null" >
+        TableName,
+      </if>
+      <if test="columnName != null" >
+        ColumnName,
+      </if>
+      <if test="rowId != null" >
+        RowId,
+      </if>
+      <if test="operationStatus != null" >
+        OperationStatus,
+      </if>
+      <if test="oldValue != null" >
+        OldValue,
+      </if>
+      <if test="newValue != null" >
+        NewValue,
+      </if>
+      <if test="timeString != null" >
+        TimeString,
+      </if>
+      <if test="discription != null" >
+        Discription,
+      </if>
+      <if test="note != null" >
+        Note,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="operationName != null" >
+        #{operationName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null" >
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null" >
+        #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="rowId != null" >
+        #{rowId,jdbcType=INTEGER},
+      </if>
+      <if test="operationStatus != null" >
+        #{operationStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="oldValue != null" >
+        #{oldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="newValue != null" >
+        #{newValue,jdbcType=VARCHAR},
+      </if>
+      <if test="timeString != null" >
+        #{timeString,jdbcType=VARCHAR},
+      </if>
+      <if test="discription != null" >
+        #{discription,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ebiz.model.OperationRecordExample" resultType="java.lang.Integer" >
+    select count(*) from operationrecord
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update operationrecord
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userName != null" >
+        UserName = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.companyName != null" >
+        CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operationName != null" >
+        OperationName = #{record.operationName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableName != null" >
+        TableName = #{record.tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.columnName != null" >
+        ColumnName = #{record.columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rowId != null" >
+        RowId = #{record.rowId,jdbcType=INTEGER},
+      </if>
+      <if test="record.operationStatus != null" >
+        OperationStatus = #{record.operationStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.oldValue != null" >
+        OldValue = #{record.oldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newValue != null" >
+        NewValue = #{record.newValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.timeString != null" >
+        TimeString = #{record.timeString,jdbcType=VARCHAR},
+      </if>
+      <if test="record.discription != null" >
+        Discription = #{record.discription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        Note = #{record.note,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update operationrecord
+    set id = #{record.id,jdbcType=INTEGER},
+      UserName = #{record.userName,jdbcType=VARCHAR},
+      CompanyName = #{record.companyName,jdbcType=VARCHAR},
+      OperationName = #{record.operationName,jdbcType=VARCHAR},
+      TableName = #{record.tableName,jdbcType=VARCHAR},
+      ColumnName = #{record.columnName,jdbcType=VARCHAR},
+      RowId = #{record.rowId,jdbcType=INTEGER},
+      OperationStatus = #{record.operationStatus,jdbcType=VARCHAR},
+      OldValue = #{record.oldValue,jdbcType=VARCHAR},
+      NewValue = #{record.newValue,jdbcType=VARCHAR},
+      TimeString = #{record.timeString,jdbcType=VARCHAR},
+      Discription = #{record.discription,jdbcType=VARCHAR},
+      Note = #{record.note,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ebiz.model.OperationRecord" >
+    update operationrecord
+    <set >
+      <if test="userName != null" >
+        UserName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        CompanyName = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="operationName != null" >
+        OperationName = #{operationName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null" >
+        TableName = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null" >
+        ColumnName = #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="rowId != null" >
+        RowId = #{rowId,jdbcType=INTEGER},
+      </if>
+      <if test="operationStatus != null" >
+        OperationStatus = #{operationStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="oldValue != null" >
+        OldValue = #{oldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="newValue != null" >
+        NewValue = #{newValue,jdbcType=VARCHAR},
+      </if>
+      <if test="timeString != null" >
+        TimeString = #{timeString,jdbcType=VARCHAR},
+      </if>
+      <if test="discription != null" >
+        Discription = #{discription,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        Note = #{note,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ebiz.model.OperationRecord" >
+    update operationrecord
+    set UserName = #{userName,jdbcType=VARCHAR},
+      CompanyName = #{companyName,jdbcType=VARCHAR},
+      OperationName = #{operationName,jdbcType=VARCHAR},
+      TableName = #{tableName,jdbcType=VARCHAR},
+      ColumnName = #{columnName,jdbcType=VARCHAR},
+      RowId = #{rowId,jdbcType=INTEGER},
+      OperationStatus = #{operationStatus,jdbcType=VARCHAR},
+      OldValue = #{oldValue,jdbcType=VARCHAR},
+      NewValue = #{newValue,jdbcType=VARCHAR},
+      TimeString = #{timeString,jdbcType=VARCHAR},
+      Discription = #{discription,jdbcType=VARCHAR},
+      Note = #{note,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
