@@ -49,6 +49,7 @@ public class EmailSenderCenter {
 
         email163Props=new Properties();
         email163Props.setProperty("mail.transport.protocol", "smtp");
+		System.out.println("选择163邮箱");
         email163Props.setProperty("mail.host", "smtp.163.com");
         email163Props.put("mail.smtp.starttls.enable", "true");
         email163Props.put("mail.smtp.auth", "true");
@@ -83,10 +84,12 @@ public class EmailSenderCenter {
 	}
 
 	public boolean sendEmailtoOneRecipientFromCompany(EbizCompany company,String emailAddress,String emailTitle,String emailContent, List<String> chosenFileStrings){
-//		final String email=company.getEmail();
-//		final String password=company.getEmailPassword();
-		final String email = "yinghaosun123@163.com";
-		final String password = "yinghaosun123";
+	final String email=company.getEmail();
+
+	final String password=company.getEmailPassword();
+		System.out.println("发件箱"+email+password);
+	//	final String email = "yinghaosun123@163.com";
+	//	final String password = "yinghaosun123";
 		System.out.println("------------------------------------��ʼ����---------------------------");
 		System.out.println("email = " + email);
 		System.out.println("email = " + emailAddress);

@@ -93,7 +93,7 @@ public class SendEmailUtil {
 
     //批量添加收件人
     private static void addRecipients(){
-        to.add("yinghaosun123@163.com");
+        //to.add("zhengbonuli521@163.com");
         //to.add("yinghaosun123@hotmail.com");
         //to.add("gonewlife2015@gmail.com");  	// Tian Guoxun
         //to.add("clylovemoney@gmail.com");  	//

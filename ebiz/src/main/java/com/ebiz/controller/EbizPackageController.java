@@ -811,8 +811,10 @@ public class EbizPackageController {
         EbizUser currentUser = (EbizUser) request.getSession().getAttribute("currentUser");
         String emailAddress = request.getParameter("email");
         String emailTitle = request.getParameter("emailTitle");
+        //邮件内容
         String emailContent = request.getParameter("emailContent");
         String userName = request.getParameter("userName");
+        //邮件最终格式
         emailContent = "Dear " + userName + "\n\n" + emailContent + "\n\nRegards\n" + currentUser.getUserName() + "(" + company.getCompanyName() + ")";
 
         emailContent = emailContent.replace("\n", "<br>");
